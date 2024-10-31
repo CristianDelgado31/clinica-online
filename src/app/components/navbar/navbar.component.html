@@ -1,0 +1,30 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item me-3">
+          <a class="nav-link active hover-effect" aria-current="page" routerLink="home">Inicio</a>
+        </li>
+        
+        <li class="nav-item me-3" *ngIf="!userInLocalStorage">
+          <a class="nav-link hover-effect" routerLink="login">Iniciar Sesión</a>
+        </li>
+        <li class="nav-item me-3" *ngIf="!userInLocalStorage">
+          <a class="nav-link hover-effect" routerLink="register">Registrarse</a>
+        </li>
+        <li class="nav-item me-3" *ngIf="userInLocalStorage">
+          <a class="nav-link hover-effect" routerLink="perfil">Perfil</a>
+        </li>
+        <li class="nav-item me-3" *ngIf="userInLocalStorage && isAdmin">
+          <a class="nav-link hover-effect" routerLink="usuarios">Usuarios</a>
+        </li>
+        <li class="nav-item me-3" *ngIf="userInLocalStorage">
+          <button class="btn btn-danger" (click)="logout()">Cerrar Sesión</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

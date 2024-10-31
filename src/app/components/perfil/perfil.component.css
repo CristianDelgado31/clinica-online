@@ -1,0 +1,35 @@
+.container {
+    max-width: 1000px; /* Aumentado el ancho máximo */
+    margin: auto;
+    background: rgba(255, 255, 255, 0.95); /* Fondo más opaco para mayor contraste */
+    border-radius: 10px; /* Bordes redondeados */
+    padding: 40px; /* Más espacio interno */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra más suave */
+}
+
+h2 {
+    margin-bottom: 30px; /* Espacio debajo del título */
+    color: #0056b3; /* Color azul para el encabezado */
+}
+
+strong {
+    color: #0056b3; /* Color de los encabezados */
+}
+
+.text-muted {
+    color: #495057; /* Color gris oscuro para los valores */
+}
+
+.profile-img {
+    max-width: 100%; /* Asegura que la imagen no exceda el ancho de la columna */
+    height: auto; /* Mantiene la proporción de la imagen */
+    border-radius: 5px; /* Bordes redondeados */
+    border: 2px solid #007bff; /* Borde azul para las imágenes */
+}
+
+.profile-card {
+    background-color: #f8f9fa; /* Color de fondo más suave para el card */
+    padding: 20px;
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); /* Sombra ligera */
+}

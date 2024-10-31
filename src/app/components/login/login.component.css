@@ -1,0 +1,74 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f2f5;
+}
+
+.container {
+  max-width: 600px; /* Ancho máximo en píxeles */
+  width: 90%; /* Uso del 90% del ancho disponible */
+  height: auto; /* Altura automática */
+  padding: 5% 5%; /* Espaciado vertical y horizontal */
+  border: 1px solid #ced4da;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  font-size: 2rem; /* Tamaño de fuente */
+  color: #333;
+  text-align: center; /* Texto centrado */
+  margin-bottom: 20px; /* Espaciado inferior */
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.text-danger {
+  font-size: 0.875rem;
+}
+
+/* Media query para pantallas pequeñas */
+@media (max-width: 576px) {
+  .container {
+    padding: 25% 5%; /* Ajuste del padding para móviles */
+  }
+
+  h2 {
+    font-size: 1.8rem; /* Tamaño de fuente más pequeño */
+  }
+
+  label {
+    font-size: 1.2rem; /* Tamaño de fuente más pequeño */
+  }
+}
+
+/* Media query para pantallas muy pequeñas */
+@media (max-width: 376px) {
+  .container {
+    padding: 6% 3%; /* Padding reducido para pantallas muy pequeñas */
+  }
+
+  h2 {
+    font-size: 1.5rem; /* Tamaño de fuente aún más pequeño */
+  }
+
+  label {
+    font-size: 1rem; /* Tamaño de fuente más pequeño */
+  }
+}

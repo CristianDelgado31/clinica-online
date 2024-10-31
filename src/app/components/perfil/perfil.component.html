@@ -1,0 +1,46 @@
+<div class="container mt-5">
+    <h2 class="text-center text-dark">Perfil del Usuario</h2>
+    
+    <div *ngIf="user" class="profile-card bg-light p-4 rounded shadow">
+      <div class="row">
+        <div class="col-md-4 text-center">
+          <div class="mb-3">
+            <div *ngIf="user.perfil1">
+              <img [src]="user.perfil1" alt="Perfil 1" class="img-thumbnail profile-img">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="mb-3">
+            <strong>Nombre: </strong> <span class="text-muted">{{ user.nombre }}</span>
+          </div>
+          <div class="mb-3">
+            <strong>Apellido: </strong> <span class="text-muted">{{ user.apellido }}</span>
+          </div>
+          <div class="mb-3">
+            <strong>Edad: </strong> <span class="text-muted">{{ user.edad }}</span>
+          </div>
+          <div class="mb-3">
+            <strong>DNI: </strong> <span class="text-muted">{{ user.dni }}</span>
+          </div>
+          <div class="mb-3">
+            <strong>Email: </strong> <span class="text-muted">{{ user.email }}</span>
+          </div>
+          <div class="mb-3" *ngIf="user.especialidad">
+            <strong>Especialidad: </strong> <span class="text-muted">{{ user.especialidad }}</span>
+          </div>
+          <div class="mb-3" *ngIf="user.obraSocial">
+            <strong>Obra Social: </strong> <span class="text-muted">{{ user.obraSocial }}</span>
+          </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="mb-3" *ngIf="user.perfil2">
+              <div>
+                <img [src]="user.perfil2" alt="Perfil 2" class="img-thumbnail profile-img">
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+  

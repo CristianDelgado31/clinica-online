@@ -1,0 +1,16 @@
+footer {
+    background-color: #f8f9fa; /* Color de fondo */
+    padding: 20px; /* Espaciado */
+    text-align: center; /* Centra el texto */
+    position: relative; /* Posicionamiento relativo */
+    bottom: 0; /* Mantiene el footer en la parte inferior */
+    width: 100%; /* Asegura que ocupe todo el ancho */
+}
+
+.nav {
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas más pequeñas */
+}
+
+.nav-link {
+    margin: 5px; /* Espaciado entre los enlaces */
+}

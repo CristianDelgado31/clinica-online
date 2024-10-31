@@ -1,0 +1,55 @@
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">Sección de Usuarios</h2>
+  <div class="text-end mb-3">
+      <button (click)="addUser()" class="btn btn-primary">Agregar Usuario</button>
+  </div>
+  
+  <div class="table-responsive"> <!-- Agregar esta clase -->
+      <table class="table table-hover table-bordered">
+        <thead class="thead-light">
+          <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Email</th>
+            <th>Edad</th>
+            <th>Obra Social</th>
+            <th>Especialidad</th>
+            <th>Imagen</th>
+            <th>Imagen 2</th>
+            <th>Estado</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td>{{ user.nombre }}</td>
+            <td>{{ user.apellido }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.edad }}</td>
+            <td>{{ user.obraSocial }}</td>
+            <td>{{ user.especialidad }}</td>
+            <td>
+              <img *ngIf="user.perfil1" [src]="user.perfil1" alt="Perfil de {{ user.nombre }}" 
+                   class="img-thumbnail">
+            </td>
+            <td>
+              <img *ngIf="user.perfil2" [src]="user.perfil2" alt="Perfil de {{ user.nombre }}" 
+                   class="img-thumbnail">
+            </td>
+            <td>
+              <span *ngIf="user.especialidad" class="badge" [ngClass]="{'bg-success': user.profileValidatedByAdmin, 'bg-danger': !user.profileValidatedByAdmin}">
+                {{ user.profileValidatedByAdmin ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+            <td>
+              <button *ngIf="user.especialidad" class="btn" 
+                      [ngClass]="{'btn-danger': user.profileValidatedByAdmin, 'btn-success': !user.profileValidatedByAdmin}" 
+                      (click)="toggleUserAccess(user.id, user.profileValidatedByAdmin)">
+              {{ user.profileValidatedByAdmin ? 'Inhabilitar' : 'Habilitar' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  </div> <!-- Fin de table-responsive -->
+</div>

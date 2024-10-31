@@ -1,0 +1,63 @@
+.table {
+  border: 1px solid #dee2e6; /* Borde a la tabla */
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f8f9fa; /* Fondo al pasar el mouse */
+}
+
+.img-thumbnail {
+  width: 50px; 
+  height: 50px; 
+  border-radius: 50%; 
+  object-fit: cover;
+}
+
+.badge {
+  font-size: 0.9rem;
+  padding: 0.5em 0.75em; /* Aumentar espacio interior */
+}
+
+th {
+  white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+  overflow: hidden; /* Oculta contenido que se desborde */
+  text-overflow: ellipsis; /* Muestra '...' si el texto es demasiado largo */
+}
+
+thead {
+  background-color: #e9ecef; /* Color de fondo del encabezado */
+}
+
+.btn {
+  transition: background-color 0.3s ease; /* Suavizar el cambio de color del botón */
+}
+
+.btn-primary {
+  background-color: #007bff; /* Color del botón primario */
+}
+
+.btn-primary:hover {
+  background-color: #0056b3; /* Color del botón al pasar el mouse */
+}
+
+.btn-danger {
+  background-color: #dc3545; /* Color del botón de inhabilitar */
+}
+
+.btn-danger:hover {
+  background-color: #c82333; /* Color al pasar el mouse */
+}
+
+.btn-success {
+  background-color: #28a745; /* Color del botón de habilitar */
+}
+
+.btn-success:hover {
+  background-color: #218838; /* Color al pasar el mouse */
+}
+@media (max-width: 768px) {
+  .img-thumbnail {
+      width: 40px; /* Tamaño más pequeño para pantallas pequeñas */
+      height: 40px;
+  }
+}

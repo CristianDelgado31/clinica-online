@@ -1,0 +1,10 @@
+.hover-effect {
+    transition: box-shadow 0.3s ease, background-color 0.3s ease; /* Transiciones suaves */
+  }
+  
+  .hover-effect:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra al pasar el mouse */
+    background-color: rgba(0, 123, 255, 0.1); /* Fondo ligeramente azul al pasar el mouse */
+    border-radius: 10px; /* Bordes redondeados */
+  }
+  
