@@ -1,0 +1,34 @@
+<form [formGroup]="disponibilidadForm" (ngSubmit)="onSubmit()">
+  <!-- Especialidad -->
+  <div class="form-group mb-4">
+    <label for="especialidad" class="h6">Especialidad</label>
+    <select id="especialidad" class="form-control" formControlName="especialidad">
+      <option *ngFor="let especialidad of especialidades" [value]="especialidad">{{ especialidad }}</option>
+    </select>
+  </div>
+
+  <!-- Días Disponibles -->
+  <div class="form-group mb-4">
+    <label class="h6">Días Disponibles</label>
+    <div class="d-flex flex-wrap">
+      <div class="form-check form-check-inline mr-4" *ngFor="let dia of ['lunes', 'martes', 'miercoles', 'jueves', 'viernes']">
+        <input type="checkbox" class="form-check-input" [formControlName]="dia" id="{{ dia }}">
+        <label class="form-check-label" for="{{ dia }}">{{ dia | titlecase }}</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Horarios -->
+  <div class="form-group mb-4">
+    <label for="horas" class="h6">Horario</label>
+    <div class="d-flex">
+      <input type="time" class="form-control" formControlName="horaInicio" placeholder="Hora de Inicio">
+      <input type="time" class="form-control ml-2" formControlName="horaFin" placeholder="Hora de Fin">
+    </div>
+  </div>
+
+  <!-- Botón de Envío -->
+  <button type="submit" class="btn btn-primary btn-block mt-4" [disabled]="disponibilidadForm.invalid">
+    Guardar Disponibilidad
+  </button>
+</form>

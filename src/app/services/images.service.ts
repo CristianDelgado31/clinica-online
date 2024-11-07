@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { environmentStorage } from '../environments/environmentStorage';
+import { v4 as uuidv4 } from 'uuid';
+
 
 @Injectable({
   providedIn: 'root'
@@ -22,16 +24,24 @@ export class ImagesService {
   }
 
   async uploadImage(file: File): Promise<string> {
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!validTypes.includes(file.type)) {
+        throw new Error('Tipo de archivo no soportado.'); 
+    }
+
+    const fileExtension = file.name.split('.').pop(); // Obtener la extensión
+    const fileName = `${uuidv4()}.${fileExtension}`; // Combinar UUID con la extensión
+
     const command = new PutObjectCommand({
       Bucket: this.bucketName,
-      Key: file.name,
+      Key: fileName,
       Body: file,
       ACL: 'public-read', // Ajusta según necesites
     });
 
     try {
       await this.s3Client.send(command);
-      return `https://${this.bucketName}.nyc3.digitaloceanspaces.com/${file.name}`; // URL del archivo subido
+      return `https://${this.bucketName}.nyc3.digitaloceanspaces.com/${fileName}`; // URL del archivo subido
     } catch (err) {
       console.error('Error al subir la imagen', err);
       const error = err as Error;

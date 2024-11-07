@@ -1,46 +1,96 @@
 <div class="container mt-5">
-    <h2 class="text-center text-dark">Perfil del Usuario</h2>
-    
-    <div *ngIf="user" class="profile-card bg-light p-4 rounded shadow">
-      <div class="row">
-        <div class="col-md-4 text-center">
-          <div class="mb-3">
-            <div *ngIf="user.perfil1">
-              <img [src]="user.perfil1" alt="Perfil 1" class="img-thumbnail profile-img">
-            </div>
-          </div>
+  <h2 class="text-center text-dark">Perfil del Usuario</h2>
+  
+  <div *ngIf="user" class="profile-card bg-light p-4 rounded shadow">
+    <div class="row">
+      <div class="col-md-4 text-center">
+        <div class="mb-3" *ngIf="user.perfil1">
+          <img [src]="user.perfil1" alt="Perfil 1" class="img-thumbnail profile-img">
         </div>
-        <div class="col-md-4">
-          <div class="mb-3">
-            <strong>Nombre: </strong> <span class="text-muted">{{ user.nombre }}</span>
-          </div>
-          <div class="mb-3">
-            <strong>Apellido: </strong> <span class="text-muted">{{ user.apellido }}</span>
-          </div>
-          <div class="mb-3">
-            <strong>Edad: </strong> <span class="text-muted">{{ user.edad }}</span>
-          </div>
-          <div class="mb-3">
-            <strong>DNI: </strong> <span class="text-muted">{{ user.dni }}</span>
-          </div>
-          <div class="mb-3">
-            <strong>Email: </strong> <span class="text-muted">{{ user.email }}</span>
-          </div>
-          <div class="mb-3" *ngIf="user.especialidad">
-            <strong>Especialidad: </strong> <span class="text-muted">{{ user.especialidad }}</span>
-          </div>
-          <div class="mb-3" *ngIf="user.obraSocial">
-            <strong>Obra Social: </strong> <span class="text-muted">{{ user.obraSocial }}</span>
-          </div>
+      </div>
+      <div class="col-md-4">
+        <div class="mb-3">
+          <strong>Nombre: </strong> <span class="text-muted">{{ user.nombre }}</span>
         </div>
-        <div class="col-md-4 text-center">
-            <div class="mb-3" *ngIf="user.perfil2">
-              <div>
-                <img [src]="user.perfil2" alt="Perfil 2" class="img-thumbnail profile-img">
-              </div>
-            </div>
-          </div>
+        <div class="mb-3">
+          <strong>Apellido: </strong> <span class="text-muted">{{ user.apellido }}</span>
+        </div>
+        <div class="mb-3">
+          <strong>Edad: </strong> <span class="text-muted">{{ user.edad }}</span>
+        </div>
+        <div class="mb-3">
+          <strong>DNI: </strong> <span class="text-muted">{{ user.dni }}</span>
+        </div>
+        <div class="mb-3">
+          <strong>Email: </strong> <span class="text-muted">{{ user.email }}</span>
+        </div>
+        <div class="mb-3" *ngIf="user.obraSocial">
+          <strong>Obra social: </strong> <span class="text-muted">{{ user.obraSocial }}</span>
+        </div>
+        <div class="mb-3" *ngIf="user.especialidades">
+          <strong>Especialidades: </strong>
+          <span class="text-muted" *ngFor="let especialidad of user.especialidades">{{ especialidad }} </span>
+        </div>
+      </div>
+      <div class="col-md-4 text-center">
+        <div class="mb-3" *ngIf="user.perfil2">
+          <img [src]="user.perfil2" alt="Perfil 2" class="img-thumbnail profile-img">
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón para abrir el modal -->
+    <button *ngIf="user.especialidades" class="btn btn-primary" (click)="openModal()">Agregar/Modificar Disponibilidad Horaria</button>
+  </div>
+
+  <!-- Modal para editar la disponibilidad -->
+  <div class="modal fade" id="disponibilidadModal" tabindex="-1" aria-labelledby="disponibilidadModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="disponibilidadModalLabel">Agregar/Modificar Disponibilidad Horaria</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <app-disponibilidad-form *ngIf="user.especialidades"
+            [especialidades]="user.especialidades"
+            [user]="user"
+            (submit)="handleDisponibilidadSubmit($event)">
+          </app-disponibilidad-form>
+        </div>
       </div>
     </div>
   </div>
-  
+
+  <!-- Mostrar disponibilidades existentes -->
+  <!-- <div *ngIf="disponibilidades$ | async as disponibilidades;">
+  <div *ngIf="disponibilidades.length > 0" class="table-responsive mt-4">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Especialidad</th>
+          <th>Lunes</th>
+          <th>Martes</th>
+          <th>Miércoles</th>
+          <th>Jueves</th>
+          <th>Viernes</th>
+          <th>Horario</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let disponibilidad of disponibilidades">
+          <td>{{ disponibilidad.especialidad }}</td>
+          <td>{{ disponibilidad.lunes ? 'Sí' : 'No' }}</td>
+          <td>{{ disponibilidad.martes ? 'Sí' : 'No' }}</td>
+          <td>{{ disponibilidad.miercoles ? 'Sí' : 'No' }}</td>
+          <td>{{ disponibilidad.jueves ? 'Sí' : 'No' }}</td>
+          <td>{{ disponibilidad.viernes ? 'Sí' : 'No' }}</td>
+          <td>{{ disponibilidad.horaInicio }} - {{ disponibilidad.horaFin }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div> -->
+
+
+</div>

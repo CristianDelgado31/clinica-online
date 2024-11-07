@@ -1,93 +1,49 @@
-.option-card {
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-    border-radius: 15px;
-    width: 350px; /* Aumentar el ancho para PC */
-    height: 250px; /* Aumentar la altura para PC */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    margin: 20px; /* Espaciado uniforme entre tarjetas */
+.option-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Centrar el contenido verticalmente */
+  padding: 20px;
+  border-radius: 8px;
+  transition: background-color 0.3s, transform 0.3s;
+  width: 100%;
+  height: 500px; /* Altura fija para hacer que los botones se vean más llenos */
+  border: 1px solid #dee2e6; /* Borde alrededor del botón */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
 }
 
-.option-card:hover {
-    transform: scale(1.05); /* Aumenta el tamaño en hover */
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); /* Aumentar sombra en hover */
+.option-button:hover {
+  background-color: #f8f9fa;
+  transform: scale(1.05); /* Efecto de aumento al pasar el mouse */
 }
 
-.option-title {
-    font-size: 1.5rem; /* Aumentar tamaño de fuente */
-    font-weight: bold; /* Negrita */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Sombra de texto */
+.option-image {
+  width: 220px; /* Ajuste de tamaño */
+  height: 220px; /* Ajuste de tamaño */
+  margin-bottom: 10px;
+  object-fit: cover; /* Ajustar imagen */
 }
 
-/* Colores de fondo y efectos en hover */
-.bg-primary {
-    background-color: #007bff; /* Color primario */
+.option-text {
+  font-weight: bold; /* Texto en negrita */
+  font-size: 1.5rem; /* Tamaño de texto más grande */
+  color: #007bff; /* Color de texto azul */
+  margin-top: 10px;
 }
 
-.bg-primary:hover {
-    background-color: #0056b3; /* Color en hover */
+h1 {
+  font-size: 2.5rem; /* Tamaño de fuente mayor */
+  font-weight: bold; /* Negrita */
+  color: #0056b3; /* Color azul oscuro */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  margin-bottom: 20px; /* Espacio inferior */
+  letter-spacing: 1px; /* Espaciado entre letras */
 }
 
-.bg-light {
-    background-color: #f8f9fa; /* Color claro */
-}
-
-.bg-light:hover {
-    background-color: #e2e6ea; /* Color en hover */
-}
-
-h2 {
-    font-size: 2.5vw;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
-.container-form {
-    background-color: white;
-    padding: 30px;
-    margin-bottom: 20px;
-    border-radius: 10px; /* Añadir bordes redondeados */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
-}
-
-/* Media queries para mejorar la responsividad */
-@media (max-width: 768px) {
-    .option-card {
-        width: 80vw; /* Aumentar ancho en dispositivos más pequeños */
-        height: 30vh; /* Ajustar altura en dispositivos más pequeños */
-    }
-
-    h2 {
-        font-size: 5vw; /* Ajustar tamaño de fuente */
-    }
-
-    .container-form {
-        padding: 20px; /* Reducir padding en dispositivos más pequeños */
-    }
-}
-
-@media (max-width: 576px) {
-    .option-card {
-        height: 25vh; /* Ajustar altura aún más en móviles */
-    }
-
-    h2 {
-        font-size: 6vw; /* Ajustar tamaño de fuente en móviles */
-    }
-
-    .container-form {
-        padding: 15px; /* Reducir padding en móviles */
-    }
-}
-
-/* Ajustes para pantallas grandes */
-@media (min-width: 769px) {
-    .option-card {
-        width: 400px; /* Aumentar ancho en pantallas grandes */
-        height: 300px; /* Aumentar altura en pantallas grandes */
-    }
+.container {
+  margin-top: 40px; /* Espacio superior para el contenedor */
+  background-color: #f8f9fa; /* Fondo gris claro */
+  padding: 30px; /* Espaciado interno del contenedor */
+  border-radius: 8px; /* Bordes redondeados */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil */
 }

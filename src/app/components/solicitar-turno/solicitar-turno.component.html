@@ -1,0 +1,81 @@
+<div class="form-container">
+    <form>
+      <h2 class="mb-3">Solicitar Turno</h2>
+
+      <!-- Especialidad -->
+      <div class="form-group mb-3">
+        <label for="especialidad">Especialidad</label>
+        <select 
+          id="especialidad" 
+          class="form-control" 
+          [(ngModel)]="selectedEspecialidad" 
+          name="especialidad"  
+          [ngModelOptions]="{standalone: true}" 
+          (change)="onEspecialidadChange()">
+          <option value="">Seleccione una especialidad</option>
+          <option *ngFor="let especialidad of especialidades" [value]="especialidad">
+            {{ especialidad }}
+          </option>
+        </select>
+      </div>
+    
+      <!-- Especialistas -->
+      <div class="form-group mb-3" *ngIf="arrEspecialistas.length > 0">
+        <label for="especialista">Especialista</label>
+        <select 
+          id="especialista" 
+          class="form-control" 
+          [(ngModel)]="selectedEspecialista" 
+          name="especialista" 
+          [ngModelOptions]="{standalone: true}" 
+          (change)="onEspecialistaChange()">
+          <option value="">Seleccione un especialista</option>
+          <option *ngFor="let especialista of arrEspecialistas" [value]="especialista.id">
+            {{ especialista.nombre }}
+          </option>
+        </select>
+      </div>
+    
+      <!-- Día disponible -->
+      <div class="form-group mb-3" *ngIf="diasDisponibles.length > 0">
+        <label for="dia">Día</label>
+        <select 
+          id="dia" 
+          class="form-control" 
+          [(ngModel)]="selectedDia" 
+          name="dia" 
+          [ngModelOptions]="{standalone: true}">
+          <option value="">Seleccione un día</option>
+          <option *ngFor="let dia of diasDisponibles" [value]="dia.dia">
+            {{ dia.dia }} ({{ dia.fecha | date:'dd/MM/yyyy' }})
+          </option>
+        </select>
+      </div>
+    
+      <!-- Hora disponible -->
+      <div class="form-group mb-3" *ngIf="horariosDisponibles.length > 0">
+        <label for="hora">Hora</label>
+        <select 
+          id="hora" 
+          class="form-control" 
+          [(ngModel)]="selectedHora" 
+          name="hora" 
+          [ngModelOptions]="{standalone: true}">
+          <option value="">Seleccione una hora</option>
+          <option *ngFor="let hora of horariosDisponibles" [value]="hora">
+            {{ hora }}
+          </option>
+        </select>
+      </div>
+  
+      <!-- Botón de Enviar -->
+      <button 
+        type="button" 
+        class="btn btn-primary" 
+        (click)="enviarTurno()"
+        [disabled]="!selectedEspecialidad || !selectedEspecialista || !selectedDia || !selectedHora">
+        Enviar
+      </button>
+    </form>
+  </div>
+  

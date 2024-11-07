@@ -1,0 +1,82 @@
+<div class="container mt-5">
+    <h2 class="text-center">Registro Administrador</h2>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="container-form">
+      <div class="mb-3">
+        <label for="nombre" class="form-label">Nombre</label>
+        <input type="text" class="form-control" id="nombre" formControlName="nombre" required>
+        <div *ngIf="registerForm.get('nombre')?.invalid && registerForm.get('nombre')?.touched" class="text-danger">
+          El nombre es requerido y solo puede contener letras.
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="apellido" class="form-label">Apellido</label>
+        <input type="text" class="form-control" id="apellido" formControlName="apellido" required>
+        <div *ngIf="registerForm.get('apellido')?.invalid && registerForm.get('apellido')?.touched" class="text-danger">
+          El apellido es requerido y solo puede contener letras.
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="edad" class="form-label">Edad</label>
+        <input type="number" class="form-control" id="edad" formControlName="edad" required>
+        <div *ngIf="registerForm.get('edad')?.invalid && registerForm.get('edad')?.touched" class="text-danger">
+          La edad es requerida y debe ser mayor de edad.
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="dni" class="form-label">DNI</label>
+        <input type="text" class="form-control" id="dni" formControlName="dni" required>
+        <div *ngIf="registerForm.get('dni')?.invalid && registerForm.get('dni')?.touched" class="text-danger">
+          El DNI es requerido y debe tener 8 dígitos.
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" formControlName="email" required>
+        <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-danger">
+          Por favor, ingresa un correo válido.
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="password" class="form-label">Contraseña</label>
+        <input type="password" class="form-control" id="password" formControlName="password" required>
+        <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="text-danger">
+          La contraseña es requerida y debe tener al menos 6 caracteres.
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="perfil1" class="form-label">Imagen de Perfil</label>
+        <input type="file" class="form-control" id="perfil1" (change)="onFileChange($event, 'perfil1')" accept="image/*">
+        <div *ngIf="perfil1Loaded" class="text-success">
+          Imagen cargada correctamente.
+        </div>
+      </div>
+    
+      <div class="text-danger">
+        <div *ngIf="!perfil1Loaded">
+            La imagen de perfil es requerida.
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100" 
+      [disabled]="!registerForm.valid || !perfil1Loaded">
+        Registrarse
+      </button>
+      
+      <div *ngIf="loading" class="text-center mt-3">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger mt-3" role="alert">
+        {{ errorMessage }}
+      </div>
+    </form>
+  </div>
+  

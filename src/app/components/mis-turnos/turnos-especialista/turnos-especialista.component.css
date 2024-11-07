@@ -1,0 +1,25 @@
+/* Si necesitas personalizar el tamaño de los botones */
+.btn-group .btn {
+    margin-right: 10px;  /* Espaciado entre los botones */
+  }
+  
+  /* Si deseas un espaciado entre las tarjetas de los turnos */
+  .list-group-item {
+    margin-bottom: 15px;  /* Espaciado entre cada turno */
+    border-radius: 8px;
+  }
+  
+  /* Si necesitas personalizar el color de fondo de las tarjetas */
+  .list-group-item {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+  }
+  
+  /* Hacer que los botones ocupen más espacio en pantallas pequeñas */
+  @media (max-width: 767px) {
+    .btn-group .btn {
+      width: 100%;
+      margin-bottom: 5px;
+    }
+  }
+  

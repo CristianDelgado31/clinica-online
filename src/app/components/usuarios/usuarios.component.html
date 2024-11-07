@@ -1,55 +1,187 @@
 <div class="container mt-4">
   <h2 class="mb-4 text-center">Sección de Usuarios</h2>
+
+  <!-- <div class="text-end mb-3">
+    <button (click)="openUserTypeModal()" class="btn btn-primary">Agregar Usuario</button>
+  </div> -->
+  
   <div class="text-end mb-3">
-      <button (click)="addUser()" class="btn btn-primary">Agregar Usuario</button>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userTypeModal">
+      Agregar Usuario
+    </button>
+  </div>
+
+  <h3 class="mt-4">Pacientes</h3>
+  <div class="table-responsive">
+    <table class="table table-hover table-bordered">
+      <thead class="thead-light">
+        <tr>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Email</th>
+          <th>DNI</th>
+          <th>Edad</th>
+          <th>Obra Social</th>
+          <th>Imagen</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of arrPacientes">
+          <td>{{ user.nombre }}</td>
+          <td>{{ user.apellido }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.dni }}</td>
+          <td>{{ user.edad }}</td>
+          <td>{{ user.obraSocial }}</td>
+          <td>
+            <img [src]="user.perfil1" alt="Imagen de perfil" class="img-thumbnail">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modals -->
+  <!-- Tipo de Usuario Modal -->
+  <div class="modal fade" id="userTypeModal" tabindex="-1" aria-labelledby="userTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="userTypeModalLabel">Seleccionar Tipo de Usuario</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <button class="btn btn-primary m-2" (click)="openUserForm('paciente')">Crear Paciente</button>
+          <button class="btn btn-success m-2" (click)="openUserForm('especialista')">Crear Especialista</button>
+          <button class="btn btn-warning m-2" (click)="openUserForm('administrador')">Crear Administrador</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulario de Usuario Modal -->
+  <div class="modal fade" id="userFormModal" tabindex="-1" aria-labelledby="userFormModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="userFormModalLabel">Agregar Usuario</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <ng-container *ngIf="selectedUserType === 'paciente'">
+            <app-pacient-form [redirectToLogin]="redirectToLogin" (registrationSuccess)="handleRegistrationSuccess()"></app-pacient-form>
+          </ng-container>
+          <ng-container *ngIf="selectedUserType === 'especialista'">
+            <app-specialist-form [redirectToLogin]="redirectToLogin" (registrationSuccess)="handleRegistrationSuccess()"></app-specialist-form>
+          </ng-container>
+          <ng-container *ngIf="selectedUserType === 'administrador'">
+            <app-admin-form [redirectToLogin]="redirectToLogin" (registrationSuccess)="handleRegistrationSuccess()"></app-admin-form>
+          </ng-container>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <h3 class="mt-4">Especialistas</h3>
+  <div class="table-responsive">
+    <table class="table table-hover table-bordered">
+      <thead class="thead-light">
+        <tr>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Email</th>
+          <th>DNI</th>
+          <th>Edad</th>
+          <th>Especialidades</th>
+          <th>Imagen</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of arrEspecialistas">
+          <td>{{ user.nombre }}</td>
+          <td>{{ user.apellido }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.dni }}</td>
+          <td>{{ user.edad }}</td>
+          <td>
+            <button class="btn btn-info" (click)="openSpecialtiesModal(user)">Ver Especialidades</button>
+          </td>
+          <td>
+            <img [src]="user.perfil1" alt="Imagen de perfil" class="img-thumbnail">
+          </td>
+          <td>
+            <span class="badge" [ngClass]="{'bg-success': user.profileValidatedByAdmin, 'bg-danger': !user.profileValidatedByAdmin}">
+              {{ user.profileValidatedByAdmin ? 'Habilitado' : 'Deshabilitado' }}
+            </span>
+          </td>
+          <td>
+            <button class="btn" 
+                    [ngClass]="{'btn-danger': user.profileValidatedByAdmin, 'btn-success': !user.profileValidatedByAdmin}" 
+                    (click)="toggleUserAccess(user.id, user.profileValidatedByAdmin)">
+              {{ user.profileValidatedByAdmin ? 'Inhabilitar' : 'Habilitar' }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
   
-  <div class="table-responsive"> <!-- Agregar esta clase -->
-      <table class="table table-hover table-bordered">
-        <thead class="thead-light">
-          <tr>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Email</th>
-            <th>Edad</th>
-            <th>Obra Social</th>
-            <th>Especialidad</th>
-            <th>Imagen</th>
-            <th>Imagen 2</th>
-            <th>Estado</th>
-            <th>Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let user of users">
-            <td>{{ user.nombre }}</td>
-            <td>{{ user.apellido }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.edad }}</td>
-            <td>{{ user.obraSocial }}</td>
-            <td>{{ user.especialidad }}</td>
-            <td>
-              <img *ngIf="user.perfil1" [src]="user.perfil1" alt="Perfil de {{ user.nombre }}" 
-                   class="img-thumbnail">
-            </td>
-            <td>
-              <img *ngIf="user.perfil2" [src]="user.perfil2" alt="Perfil de {{ user.nombre }}" 
-                   class="img-thumbnail">
-            </td>
-            <td>
-              <span *ngIf="user.especialidad" class="badge" [ngClass]="{'bg-success': user.profileValidatedByAdmin, 'bg-danger': !user.profileValidatedByAdmin}">
-                {{ user.profileValidatedByAdmin ? 'Activo' : 'Inactivo' }}
-              </span>
-            </td>
-            <td>
-              <button *ngIf="user.especialidad" class="btn" 
-                      [ngClass]="{'btn-danger': user.profileValidatedByAdmin, 'btn-success': !user.profileValidatedByAdmin}" 
-                      (click)="toggleUserAccess(user.id, user.profileValidatedByAdmin)">
-              {{ user.profileValidatedByAdmin ? 'Inhabilitar' : 'Habilitar' }}
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-  </div> <!-- Fin de table-responsive -->
+  <!-- Modal para mostrar especialidades -->
+  <div class="modal fade" id="specialtiesModal" tabindex="-1" aria-labelledby="specialtiesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="specialtiesModalLabel">Especialidades</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="selectedSpecialist">
+            <h6>{{ selectedSpecialist.nombre }} {{ selectedSpecialist.apellido }}</h6>
+            <ul>
+              <li *ngFor="let especialidad of selectedSpecialist.especialidades">{{ especialidad }}</li>
+            </ul>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+
+  <h3 class="mt-4">Administradores</h3>
+  <div class="table-responsive">
+    <table class="table table-hover table-bordered">
+      <thead class="thead-light">
+        <tr>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Email</th>
+          <th>DNI</th>
+          <th>Edad</th>
+          <th>Imagen</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of arrAdmins">
+          <td>{{ user.nombre }}</td>
+          <td>{{ user.apellido }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.dni }}</td>
+          <td>{{ user.edad }}</td>
+          <td>
+            <img [src]="user.perfil1" alt="Imagen de perfil" class="img-thumbnail">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

@@ -1,37 +1,75 @@
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Iniciar Sesión</h2>
-    
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="mb-3">
-        <label for="email" class="form-label">Correo Electrónico</label>
-        <input type="email" class="form-control" id="email" formControlName="email" autocomplete="email" required>
-        <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="text-danger">
-          Por favor, ingresa un correo válido.
-        </div>
-      </div>
+  <h2 class="text-center mb-4">Iniciar Sesión</h2>
   
-      <div class="mb-3">
-        <label for="password" class="form-label">Contraseña</label>
-        <input type="password" class="form-control" id="password" formControlName="password" autocomplete="current-password" required>
-        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-danger">
-          La contraseña es requerida.
-        </div>
-      </div>
-  
-      <div *ngIf="errorMessage" class="text-danger mb-3">
-        {{ errorMessage }}
-      </div>
-  
-      <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid || loading">
-        Iniciar Sesión
+  <div class="row justify-content-center mb-4">
+    <div class="col-6 col-md-2" (click)="getPacientes(1)">
+      <button class="btn access-button">
+        <img src={{urlPaciente}} alt="Paciente 1" class="access-image" />
+        <span>Paciente 1</span>
       </button>
-    </form>
-  
-    <!-- Spinner de carga -->
-    <div *ngIf="loading" class="text-center mt-3">
-      <div class="spinner-border" role="status">
-        <span class="visually-hidden">Cargando...</span>
-      </div>
+    </div>
+    <div class="col-6 col-md-2" (click)="getPacientes(2)">
+      <button class="btn access-button">
+        <img src={{urlPaciente}} alt="Paciente 2" class="access-image" />
+        <span>Paciente 2</span>
+      </button>
+    </div>
+    <div class="col-6 col-md-2" (click)="getPacientes(3)">
+      <button class="btn access-button">
+        <img [src]="urlPaciente" alt="Paciente 3" class="access-image" />
+        <span>Paciente 3</span>
+      </button>
+    </div>
+    <div class="col-6 col-md-2" (click)="getEspecialistas(1)">
+      <button class="btn access-button">
+        <img src={{urlEspecialista}} alt="Especialista 1" class="access-image" />
+        <span>Especialista 1</span>
+      </button>
+    </div>
+    <div class="col-6 col-md-2" (click)="getEspecialistas(2)">
+      <button class="btn access-button">
+        <img src={{urlEspecialista}} alt="Especialista 2" class="access-image" />
+        <span>Especialista 2</span>
+      </button>
+    </div>
+    <div class="col-6 col-md-2" (click)="getAdmins(1)">
+      <button class="btn access-button">
+        <img src={{urlAdmin}} alt="Administrador" class="access-image" />
+        <span>Administrador</span>
+      </button>
     </div>
   </div>
   
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label for="email" class="form-label">Correo Electrónico</label>
+      <input type="email" class="form-control" id="email" formControlName="email" autocomplete="email" required>
+      <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="text-danger">
+        Por favor, ingresa un correo válido.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="password" class="form-label">Contraseña</label>
+      <input type="password" class="form-control" id="password" formControlName="password" autocomplete="current-password" required>
+      <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-danger">
+        La contraseña es requerida.
+      </div>
+    </div>
+
+    <div *ngIf="errorMessage" class="text-danger mb-3">
+      {{ errorMessage }}
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid || loading">
+      Iniciar Sesión
+    </button>
+  </form>
+
+  <!-- Spinner de carga -->
+  <div *ngIf="loading" class="text-center mt-3">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+</div>

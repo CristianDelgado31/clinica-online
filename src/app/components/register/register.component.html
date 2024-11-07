@@ -1,142 +1,23 @@
-<div class="container mt-5">
-    <h2 class="text-center"> Registro de usuario</h2>
+<div class="container text-center mt-5">
+  <h1 class="mb-4">Selecciona tu tipo de usuario</h1>
+  
+  <div *ngIf="!showForm" class="row justify-content-center mt-4">
+    <div class="col-md-4">
+      <button (click)="showPacienteForm()" class="btn btn-light option-button">
+        <img src="media/paciente.png" alt="Paciente" class="option-image"/>
+        <span class="option-text">Paciente</span>
+      </button>
+    </div>
+    <div class="col-md-4">
+      <button (click)="showSpecialistForm()" class="btn btn-light option-button">
+        <img src="media/doctor.png" alt="Especialista" class="option-image"/>
+        <span class="option-text">Especialista</span>
+      </button>
+    </div>
+  </div>
 
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="container-form">
-        <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre</label>
-            <input type="text" class="form-control" id="nombre" formControlName="nombre" required>
-            <div *ngIf="registerForm.get('nombre')?.invalid && registerForm.get('nombre')?.touched" class="text-danger">
-                El nombre es requerido y solo puede contener letras.
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <label for="apellido" class="form-label">Apellido</label>
-            <input type="text" class="form-control" id="apellido" formControlName="apellido" required>
-            <div *ngIf="registerForm.get('apellido')?.invalid && registerForm.get('apellido')?.touched" class="text-danger">
-                El apellido es requerido y solo puede contener letras.
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <label for="edad" class="form-label">Edad</label>
-            <input type="number" class="form-control" id="edad" formControlName="edad" required>
-            <div *ngIf="registerForm.get('edad')?.invalid && registerForm.get('edad')?.touched" class="text-danger">
-                La edad es requerida y debe ser un número positivo.
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <label for="dni" class="form-label">DNI</label>
-            <input type="text" class="form-control" id="dni" formControlName="dni" required>
-            <div *ngIf="registerForm.get('dni')?.invalid && registerForm.get('dni')?.touched" class="text-danger">
-                El DNI es requerido y debe tener 10 dígitos.
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <label for="email" class="form-label">Mail</label>
-            <input type="email" class="form-control" id="email" formControlName="email" required>
-            <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-danger">
-                Por favor, ingresa un correo válido.
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <label for="password" class="form-label">Contraseña</label>
-            <input type="password" class="form-control" id="password" formControlName="password" required>
-            <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="text-danger">
-                La contraseña es requerida y debe tener al menos 6 caracteres.
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <label for="userType" class="form-label">Seleccione un tipo de usuario</label>
-            <select class="form-select" id="userType" (change)="onTypeChange($event)" required>
-                <option value="">Seleccione un tipo</option>
-                <option value="paciente">Paciente</option>
-                <option value="especialista">Especialista</option>
-                <option *ngIf="anAdmin" value="admin">Administrador</option>
-            </select>
-        </div>
-        
-
-        <div class="mb-3" *ngIf="selectPaciente">
-            <label for="obraSocial" class="form-label">Obra Social</label>
-            <input type="text" class="form-control" id="obraSocial" formControlName="obraSocial" required>
-            <div *ngIf="registerForm.get('obraSocial')?.invalid && registerForm.get('obraSocial')?.touched" class="text-danger">
-                La obra social es requerida.
-            </div>
-        </div>
-
-        <div class="mb-3" *ngIf="selectSpecialist">
-            <label for="especialidad" class="form-label">Especialidad</label>
-            <select class="form-select" id="especialidad" formControlName="especialidad" (change)="onEspecialidadChange($event)" required>
-                <option value="">Selecciona una especialidad</option>
-                <option value="medicina">Medicina</option>
-                <option value="odontologia">Odontología</option>
-                <option value="psicologia">Psicología</option>
-                <option value="otra">Otra</option>
-            </select>
-            <div *ngIf="registerForm.get('especialidad')?.invalid && registerForm.get('especialidad')?.touched" class="text-danger">
-                La especialidad es requerida.
-            </div>
-
-            <input *ngIf="registerForm.get('especialidad')?.value === 'otra'" 
-                   type="text" class="form-control mt-2" 
-                   placeholder="Agregar nueva especialidad" 
-                   formControlName="nuevaEspecialidad">
-            <div *ngIf="registerForm.get('nuevaEspecialidad')?.invalid && registerForm.get('nuevaEspecialidad')?.touched" class="text-danger">
-                La especialidad es requerida y solo puede contener letras.
-            </div>
-        </div>
-
-        <div class="mb-3" *ngIf="selectPaciente">
-            <label for="perfil1" class="form-label">Imagen de Perfil 1</label>
-            <input type="file" class="form-control" id="perfil1" (change)="onFileChange($event, 'perfil1')" accept="image/*" required>
-        </div>
-
-        <div class="mb-3" *ngIf="selectPaciente">
-            <label for="perfil2" class="form-label">Imagen de Perfil 2</label>
-            <input type="file" class="form-control" id="perfil2" (change)="onFileChange($event, 'perfil2')" accept="image/*" required>
-        </div>
-
-        <div class="mb-3" *ngIf="selectSpecialist">
-            <label for="perfil" class="form-label">Imagen de Perfil</label>
-            <input type="file" class="form-control" id="perfil" (change)="onFileChange($event, 'perfil1')" accept="image/*" required>
-        </div>
-
-        <div class="mb-3" *ngIf="selectAdmin">
-            <label for="perfil" class="form-label">Imagen de Perfil</label>
-            <input type="file" class="form-control" id="perfil" (change)="onFileChange($event, 'perfil1')" accept="image/*" required>
-        </div>
-
-
-        <div class="text-danger">
-            <div *ngIf="!perfil1Loaded && !perfil2Loaded && selectPaciente">
-                Debes cargar ambas imágenes de perfil.
-            </div>
-            <div *ngIf="!perfil1Loaded && (selectSpecialist || selectAdmin)">
-                Debes cargar la imagen de perfil.
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary w-100" 
-        [disabled]="registerForm.invalid || !selectedType ||(selectPaciente && (!perfil1Loaded || !perfil2Loaded)) || ((selectSpecialist || selectAdmin) && !perfil1Loaded)">
-            Registrar
-        </button>
-        <!-- !selectAdmin && !selectPaciente && !selectSpecialist -->
-
-
-        <div *ngIf="loading" class="text-center mt-3">
-            <div class="spinner-border" role="status">
-                <span class="visually-hidden">Cargando...</span>
-            </div>
-        </div>
-
-        <div *ngIf="errorMessage" class="alert alert-danger mt-3" role="alert">
-            {{ errorMessage }}
-        </div>
-
-    </form>
+  <div *ngIf="showForm" class="text-start mt-4">
+    <app-pacient-form *ngIf="isPacienteFormVisible"></app-pacient-form>
+    <app-specialist-form *ngIf="!isPacienteFormVisible"></app-specialist-form>
+  </div>
 </div>

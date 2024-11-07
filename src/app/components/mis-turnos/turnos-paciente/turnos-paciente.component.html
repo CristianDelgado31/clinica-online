@@ -1,0 +1,100 @@
+<div class="container mt-5">
+    <h3>Mis Turnos</h3>
+  
+    <!-- Filtros -->
+    <div class="row mb-4">
+      <div class="col-12 col-md-6 mb-3 mb-md-0">
+        <label for="especialidadFiltro" class="form-label">Filtrar por Especialidad</label>
+        <input
+          id="especialidadFiltro"
+          type="text"
+          class="form-control form-control-sm"
+          [(ngModel)]="filtroEspecialidad"
+          (input)="filtrarTurnos()"
+          placeholder="Ej: Cardiología"
+        />
+      </div>
+      
+      <div class="col-12 col-md-6 mb-3 mb-md-0">
+        <label for="especialistaFiltro" class="form-label">Filtrar por Especialista</label>
+        <input
+          id="especialistaFiltro"
+          type="text"
+          class="form-control form-control-sm"
+          [(ngModel)]="filtroEspecialista"
+          (input)="filtrarTurnos()"
+          placeholder="Ej: Dr. Juan Pérez"
+        />
+      </div>
+    </div>
+  
+    <!-- Mensaje cuando no hay turnos -->
+    <div *ngIf="turnosFiltrados.length === 0" class="alert alert-warning">
+      No tienes turnos agendados.
+    </div>
+  
+    <!-- Listado de turnos -->
+    <ul class="list-group">
+      <li *ngFor="let turno of turnosFiltrados" class="list-group-item mb-3">
+        <h5>{{ turno.especialidad }} - {{ turno.especialista.nombre }} {{ turno.especialista.apellido }}</h5>
+        <p><strong>Fecha:</strong> {{ turno.dia }} | <strong>Hora:</strong> {{ turno.hora }}</p>
+        
+        <p><strong>Estado:</strong> 
+          <span [ngClass]="{
+            'text-success': turno.estado === 'realizado',
+            'text-primary': turno.estado === 'aceptado',
+            'text-warning': turno.estado === 'pendiente',
+            'text-danger': turno.estado === 'cancelado'
+          }">
+            {{ turno.estado | uppercase}}
+          </span>
+        </p>
+  
+        <!-- Acciones según el estado del turno -->
+        <div *ngIf="turno.estado !== 'realizado'" class="btn-group mb-2">
+            <button class="btn btn-danger btn-sm" (click)="cancelarTurno(turno.id)">
+            <i class="bi bi-x-circle"></i> Cancelar Turno
+            </button>
+        </div>
+        
+        <div *ngIf="turno.resenia || turno.comentario" class="btn-group boton mb-2">
+            <button class="btn btn-info btn-sm" (click)="verResena(turno.id)">
+            <i class="bi bi-eye"></i> Ver Reseña
+            </button>
+        </div>
+        
+        <div *ngIf="turno.estado === 'realizado' && turno.resenia" class="btn-group boton mb-2">
+            <button class="btn btn-primary btn-sm" (click)="completarEncuesta(turno.id)">
+            <i class="bi bi-pencil-square"></i> Completar Encuesta
+            </button>
+        </div>
+        
+        <div *ngIf="turno.estado === 'realizado'" class="btn-group boton mb-2">
+            <button class="btn btn-warning btn-sm" (click)="calificarAtencion(turno.id)">
+            <i class="bi bi-star"></i> Calificar Atención
+            </button>
+        </div>
+  
+      </li>
+    </ul>
+  </div>
+  
+  <!-- Modal para cancelar el turno -->
+<div class="modal fade" id="cancelarTurnoModal" tabindex="-1" aria-labelledby="cancelarTurnoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cancelarTurnoModalLabel">Cancelar Turno</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <label for="comentarioCancelacion">Comentario de cancelación:</label>
+        <textarea id="comentarioCancelacion" class="form-control" [(ngModel)]="comentarioCancelacion" rows="3" placeholder="Escribe el motivo de la cancelación..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-danger" (click)="confirmarCancelacion()">Confirmar Cancelación</button>
+      </div>
+    </div>
+  </div>
+</div>

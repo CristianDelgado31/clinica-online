@@ -1,0 +1,87 @@
+<div class="container mt-5">
+    <h3>Mis Turnos - Especialista</h3>
+  
+    <!-- Filtros -->
+    <div class="row mb-4">
+      <div class="col-12 col-md-6 mb-3 mb-md-0">
+        <label for="especialidadFiltro" class="form-label">Filtrar por Especialidad</label>
+        <input
+          id="especialidadFiltro"
+          type="text"
+          class="form-control form-control-sm"
+          [(ngModel)]="filtroEspecialidad"
+          (input)="filtrarTurnos()"
+          placeholder="Ej: Cardiología"
+        />
+      </div>
+  
+      <div class="col-12 col-md-6 mb-3 mb-md-0">
+        <label for="pacienteFiltro" class="form-label">Filtrar por Paciente</label>
+        <input
+          id="pacienteFiltro"
+          type="text"
+          class="form-control form-control-sm"
+          [(ngModel)]="filtroPaciente"
+          (input)="filtrarTurnos()"
+          placeholder="Ej: Juan Pérez"
+        />
+      </div>
+    </div>
+  
+    <!-- No hay turnos -->
+    <div *ngIf="turnos.length === 0" class="alert alert-warning">
+      No tienes turnos asignados.
+    </div>
+  
+    <!-- Listado de turnos -->
+    <ul class="list-group">
+      <li *ngFor="let turno of turnosFiltrados" class="list-group-item mb-3">
+        <h5>{{ turno.especialidad }} - {{ turno.paciente.nombre }} {{ turno.paciente.apellido }}</h5>
+        <p><strong>Fecha:</strong> {{ turno.dia }} | <strong>Hora:</strong> {{ turno.hora }}</p>
+  
+        <p><strong>Estado:</strong> 
+          <span [ngClass]="{
+            'text-success': turno.estado === 'realizado',
+            'text-warning': turno.estado === 'pendiente',
+            'text-danger': turno.estado === 'cancelado',
+            'text-primary': turno.estado === 'aceptado',
+            'text-secondary': turno.estado === 'rechazado'
+          }">
+            {{ turno.estado | uppercase }}
+          </span>
+        </p>
+  
+        <!-- Acciones según el estado del turno -->
+        <div *ngIf="turno.estado === 'pendiente'" class="btn-group">
+          <button class="btn btn-danger btn-sm" (click)="cancelarTurno(turno.id)">
+            <i class="bi bi-x-circle"></i> Cancelar Turno
+          </button>
+        </div>
+  
+        <div *ngIf="turno.estado === 'pendiente'" class="btn-group">
+          <button class="btn btn-warning btn-sm" (click)="rechazarTurno(turno.id)">
+            <i class="bi bi-x-circle"></i> Rechazar Turno
+          </button>
+        </div>
+  
+        <div *ngIf="turno.estado === 'pendiente'" class="btn-group">
+          <button class="btn btn-success btn-sm" (click)="aceptarTurno(turno.id)">
+            <i class="bi bi-check-circle"></i> Aceptar Turno
+          </button>
+        </div>
+  
+        <div *ngIf="turno.estado === 'aceptado'" class="btn-group">
+          <button class="btn btn-primary btn-sm" (click)="finalizarTurno(turno.id)">
+            <i class="bi bi-pencil-square"></i> Finalizar Turno
+          </button>
+        </div>
+  
+        <div *ngIf="turno.resenia" class="btn-group">
+          <button class="btn btn-info btn-sm" (click)="verResena(turno.id)">
+            <i class="bi bi-eye"></i> Ver Reseña
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
+  

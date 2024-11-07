@@ -1,0 +1,89 @@
+/* Estilo general del contenedor */
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+  min-height: 50vh; /* Ocupa toda la altura de la pantalla */
+}
+
+form {
+  background-color: white; /* Fondo blanco para el formulario */
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px; /* Ancho máximo */
+}
+
+/* Estilo de los encabezados */
+h2 {
+  text-align: center;
+  font-size: 26px;
+  margin-bottom: 20px;
+  color: #4b87d9;
+}
+
+/* Estilo de las etiquetas */
+.form-group label {
+  font-weight: bold;
+  color: #333;
+}
+
+/* Estilo para los inputs (select) */
+select.form-control {
+  height: 45px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  padding: 10px;
+}
+
+select.form-control:focus {
+  border-color: #4b87d9;
+  box-shadow: 0 0 5px rgba(75, 135, 217, 0.5);
+  background-color: #fff;
+}
+
+/* Estilo para el botón de enviar */
+button[type="button"] {
+  width: 100%;
+  height: 45px;
+  font-size: 18px;
+  background-color: #4b87d9;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button[type="button"]:hover {
+  background-color: #3568b4;
+}
+
+button[type="button"]:disabled {
+  background-color: #c0c0c0;
+  cursor: not-allowed;
+}
+
+/* Estilos responsivos */
+@media (max-width: 576px) {
+  .form-container {
+    padding: 15px;
+  }
+
+  form {
+    padding: 15px;
+  }
+
+  button[type="button"] {
+    font-size: 16px;
+    height: 40px;
+  }
+
+  select.form-control {
+    font-size: 14px;
+  }
+}

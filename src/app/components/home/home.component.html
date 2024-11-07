@@ -1,24 +1,20 @@
 <div class="container mt-5 text-center">
-    <h2 class="text-light">Bienvenido a Nuestra Clínica</h2>
-    <p class="text-light">Su salud es nuestra prioridad.</p>
-  
-    <div class="services mt-4">
-      <h3 class="text-light">Servicios Ofrecidos</h3>
-      <div class="row">
-        <div class="col-md-6" *ngFor="let service of services">
-          <div class="card mb-3">
-            <div class="card-body">
-              <h5 class="card-title">{{ service.name }}</h5>
-              <p class="card-text">{{ service.description }}</p>
-            </div>
+  <img src="icon_hospital.png" alt="Icono de Hospital" class="hospital-icon mb-3"/>
+  <h2 class="welcome-title">Bienvenido a Nuestra Clínica</h2>
+  <p class="welcome-subtitle">Su salud es nuestra prioridad.</p>
+
+  <div class="services mt-4">
+    <h3 class="section-title">Servicios Ofrecidos</h3>
+    <div class="row">
+      <div class="col-md-6" *ngFor="let service of services">
+        <div class="card mb-3 service-card">
+          <div class="card-body">
+            <h5 class="card-title">{{ service.name }}</h5>
+            <p class="card-text">{{ service.description }}</p>
           </div>
         </div>
       </div>
     </div>
-  
-    <div class="contact-section mt-4">
-      <h3 class="text-light">Contáctenos</h3>
-      <p class="text-light">Si tiene preguntas, no dude en <a routerLink="/contact" class="text-warning">contactarnos</a>.</p>
-    </div>
   </div>
-  
+
+</div>
