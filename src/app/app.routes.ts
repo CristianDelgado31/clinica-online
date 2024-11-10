@@ -15,8 +15,11 @@ export const routes: Routes = [
     { path: 'perfil', title: 'Perfil', component: PerfilComponent},
     { path: 'usuarios', title: 'Usuarios', component: UsuariosComponent},
     { path: 'solicitar-turno', title: 'Solicitar Turno', component: SolicitarTurnoComponent},
+    // {
+    //     path: 'mis-turnos', title: 'Mis Turnos', component: MisTurnosComponent
+    // },
     {
-        path: 'mis-turnos', title: 'Mis Turnos', component: MisTurnosComponent
-    },
+        path: 'mis-turnos', title: 'Mis Turnos', component: MisTurnosComponent,
+    }
     
 ];

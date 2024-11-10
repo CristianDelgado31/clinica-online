@@ -14,6 +14,7 @@ export class NavbarComponent {
   userInLocalStorage: boolean = false; // Cambiar a booleano
   isAdmin: boolean = false; // Cambiar a booleano
   isSpecialist: boolean = false; // Cambiar a booleano
+  isPaciente: boolean = false; // Cambiar a booleano
 
   constructor(private authService: AuthService, private router: Router) { 
     this.authService.user$.subscribe(isLoggedIn => {
@@ -28,8 +29,10 @@ export class NavbarComponent {
             this.isAdmin = false;
           }
 
-          if(user.especialidades) {
-            this.isSpecialist = true;
+          if(user.obraSocial) {
+            this.isPaciente = true;
+          } else {
+            this.isPaciente = false;
           }
         }
       }

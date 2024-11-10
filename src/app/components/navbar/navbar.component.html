@@ -15,7 +15,7 @@
         <li class="nav-item me-3" *ngIf="!userInLocalStorage">
           <a class="nav-link hover-effect" routerLink="register">Registrarse</a>
         </li>
-        <li class="nav-item me-3" *ngIf="userInLocalStorage">
+        <li class="nav-item me-3" *ngIf="userInLocalStorage && isPaciente">
           <a class="nav-link hover-effect" routerLink="solicitar-turno">Solicitar turno</a>
         </li>
         <li class="nav-item me-3" *ngIf="userInLocalStorage">

@@ -53,4 +53,29 @@ export class UserService {
     const docRef = doc(this.firestore, 'turnos', turnoId);
     return updateDoc(docRef, { estado }); 
   }
+
+  cancelarTurno(turnoId: string, comentario: string) {
+    const docRef = doc(this.firestore, 'turnos', turnoId);
+    return updateDoc(docRef, { estado: 'cancelado', comentario: comentario });
+  }
+
+  rechazarTurno(turnoId: string, comentario: string) {
+    const docRef = doc(this.firestore, 'turnos', turnoId);
+    return updateDoc(docRef, { estado: 'rechazado', comentario: comentario });
+  }
+
+  finalizarTurno(turnoId: string, comentario: string) {
+    const docRef = doc(this.firestore, 'turnos', turnoId);
+    return updateDoc(docRef, { estado: 'realizado', comentario: comentario });
+  }
+
+  calificarAtencion(turnoId: string, calificacion: string) {
+    const docRef = doc(this.firestore, 'turnos', turnoId);
+    return updateDoc(docRef, { calificacion });
+  }
+
+  completarEncuesta(turnoId: string, encuesta: any) {
+    const docRef = doc(this.firestore, 'turnos', turnoId);
+    return updateDoc(docRef, { encuesta });
+  }
 }

@@ -5,11 +5,12 @@ import { DatePipe, NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TurnoService } from '../../services/turno.service';
 import { user } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-solicitar-turno',
   standalone: true,
-  imports: [FormsModule, NgIf, NgFor, DatePipe, TitleCasePipe],
+  imports: [FormsModule, NgIf, NgFor, DatePipe],
   templateUrl: './solicitar-turno.component.html',
   styleUrl: './solicitar-turno.component.css'
 })
@@ -27,7 +28,7 @@ export class SolicitarTurnoComponent implements OnInit {
   fechaLimite: Date = new Date();
   fechaMaxima: Date = new Date(this.fechaLimite.getTime() + 15 * 24 * 60 * 60 * 1000); // Fecha límite + 15 días
 
-  constructor(private userService: UserService, private turnoService: TurnoService) {}
+  constructor(private userService: UserService, private turnoService: TurnoService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadEspecialidades();
@@ -205,6 +206,8 @@ export class SolicitarTurnoComponent implements OnInit {
         console.error('Error al guardar el turno:', error);
       });
 
+      // Redirigir al componente de mis turnos
+      this.router.navigate(['/mis-turnos']);
     }
   }
 }

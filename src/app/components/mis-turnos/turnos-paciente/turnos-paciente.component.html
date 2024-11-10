@@ -44,14 +44,15 @@
             'text-success': turno.estado === 'realizado',
             'text-primary': turno.estado === 'aceptado',
             'text-warning': turno.estado === 'pendiente',
-            'text-danger': turno.estado === 'cancelado'
+            'text-danger': turno.estado === 'cancelado',
+            'text-secondary': turno.estado === 'rechazado'
           }">
             {{ turno.estado | uppercase}}
           </span>
         </p>
   
         <!-- Acciones según el estado del turno -->
-        <div *ngIf="turno.estado !== 'realizado'" class="btn-group mb-2">
+        <div *ngIf="turno.estado === 'pendiente' || turno.estado === 'aceptado  '" class="btn-group mb-2">
             <button class="btn btn-danger btn-sm" (click)="cancelarTurno(turno.id)">
             <i class="bi bi-x-circle"></i> Cancelar Turno
             </button>
@@ -63,18 +64,18 @@
             </button>
         </div>
         
-        <div *ngIf="turno.estado === 'realizado' && turno.resenia" class="btn-group boton mb-2">
+        <div *ngIf="turno.estado === 'realizado' && turno.comentario && !turno.encuesta" class="btn-group boton mb-2">
             <button class="btn btn-primary btn-sm" (click)="completarEncuesta(turno.id)">
             <i class="bi bi-pencil-square"></i> Completar Encuesta
             </button>
         </div>
         
-        <div *ngIf="turno.estado === 'realizado'" class="btn-group boton mb-2">
+        <div *ngIf="turno.estado === 'realizado' && !turno.calificacion" class="btn-group boton mb-2">
             <button class="btn btn-warning btn-sm" (click)="calificarAtencion(turno.id)">
             <i class="bi bi-star"></i> Calificar Atención
             </button>
         </div>
-  
+
       </li>
     </ul>
   </div>
@@ -98,3 +99,107 @@
     </div>
   </div>
 </div>
+
+<!-- Modal para calificar el turno, se califica con un comentario -->
+<div class="modal fade" id="calificarTurnoModal" tabindex="-1" aria-labelledby="calificarTurnoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="calificarTurnoModalLabel">Calificar Turno</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <label for="comentarioCalificacion">Comentario de calificación:</label>
+        <textarea id="comentarioCalificacion" class="form-control" [(ngModel)]="comentarioCalificacion" rows="3" placeholder="Escribe tu comentario..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="confirmarCalificacion()">Confirmar Calificación</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para completar la encuesta -->
+<div class="modal fade" id="completarEncuestaModal" tabindex="-1" aria-labelledby="completarEncuestaModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="completarEncuestaModalLabel">Encuesta de Atención</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body
+      ">
+        <div class="mb-3">
+          <label for="pregunta1" class="form-label
+          ">¿Cómo calificarías la atención recibida?</label>
+          <select id="pregunta1" class="form-select" [(ngModel)]="encuesta.atencion">
+            <option value="1">Muy mala</option>
+            <option value="2">Mala</option>
+            <option value="3">Regular</option>
+            <option value="4">Buena</option>
+            <option value="5">Muy buena</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="pregunta2" class="form-label
+          ">¿Cómo calificarías la puntualidad del especialista?</label>
+          <select id="pregunta2" class="form-select" [(ngModel)]="encuesta.puntualidad">
+            <option value="1">Muy mala</option>
+            <option value="2">Mala</option>
+            <option value="3">Regular</option>
+            <option value="4">Buena</option>
+            <option value="5">Muy buena</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="pregunta3" class="form-label
+          ">¿Cómo calificarías la atención del personal administrativo?</label>
+          <select id="pregunta3" class="form-select" [(ngModel)]="encuesta.administracion">
+            <option value="1">Muy mala</option>
+            <option value="2">Mala</option>
+            <option value="3">Regular</option>
+            <option value="4">Buena</option>
+            <option value="5">Muy buena</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="pregunta4" class="form-label  
+          ">¿Recomendarías a este especialista?</label>
+          <select id="pregunta4" class="form-select" [(ngModel)]="encuesta.recomendacion">
+            <option value="1">No</option>
+            <option value="2">No estoy seguro</option>
+            <option value="3">Sí</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="confirmarEncuesta()">Confirmar Encuesta</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal para ver el comentario -->
+
+<div class="modal fade" id="verComentarioModal" tabindex="-1" aria-labelledby="verResenaModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="verResenaModalLabel">Reseña del Turno</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body
+      ">
+        <p><strong>Comentario:</strong> {{ comentarioPacienteSeleccionado }}</p>
+        <!-- calificacion del paciente al especialista -->
+        <p *ngIf="comentarioCalificacion"><strong>Calificación:</strong> {{ comentarioCalificacion }} </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>

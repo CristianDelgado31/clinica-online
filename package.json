@@ -10,7 +10,6 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^18.2.0",
     "@angular/common": "^18.2.0",
     "@angular/compiler": "^18.2.0",
     "@angular/core": "^18.2.0",
@@ -21,6 +20,7 @@
     "@angular/router": "^18.2.0",
     "@aws-sdk/client-s3": "^3.679.0",
     "bootstrap": "^5.3.3",
+    "ngx-pagination": "^6.0.3",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.14.4",
     "tslib": "^2.3.0",
