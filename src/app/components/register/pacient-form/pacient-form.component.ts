@@ -6,11 +6,13 @@ import { Firestore, addDoc, collection, collectionData, where, orderBy, limit, q
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { ImagesService } from '../../../services/images.service';
+import { environemntCaptcha } from '../../../environments/environmentCaptcha';
+import { RecaptchaModule } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-pacient-form',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, RecaptchaModule],
   templateUrl: './pacient-form.component.html',
   styleUrl: './pacient-form.component.css'
 })
@@ -24,6 +26,9 @@ export class PacientFormComponent implements OnDestroy {
   errorMessage: string = '';
   loading: boolean = false; // Agrega esta línea
 
+  //Captcha
+  recaptchaResponse: string | null = null;
+  siteKeyCaptcha: string = environemntCaptcha.siteKey;
 
   constructor(private fb: FormBuilder, private auth: Auth, private firestore: Firestore, 
     private router: Router, private imagesService: ImagesService) {
@@ -43,6 +48,12 @@ export class PacientFormComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Limpiando imagen');
+  }
+
+  // Este método se ejecuta cuando el reCAPTCHA es completado
+  resolved(captchaResponse: any) {
+    // console.log('Captcha resuelto con el siguiente valor: ', captchaResponse);
+    this.recaptchaResponse = captchaResponse;  // Guardamos la respuesta
   }
 
   onFileChange(event: any, field: string) {

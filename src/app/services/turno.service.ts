@@ -11,4 +11,8 @@ export class TurnoService {
   setTurno(turno: any) {
     return addDoc(collection(this.firestore, 'turnos'), turno);
   }
+
+  getTurnos() {
+    return collectionData(collection(this.firestore, 'turnos'), { idField: 'id' });
+  }
 }

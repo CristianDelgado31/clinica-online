@@ -93,11 +93,19 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <re-captcha
+          siteKey="{{siteKeyCaptcha}}"
+          (resolved)="resolved($event)"
+          required>
+        </re-captcha>
+      </div>
+
       <button type="submit" class="btn btn-primary w-100" 
-      [disabled]="!registerForm.valid || !perfil1Loaded">
+      [disabled]="!registerForm.valid || !perfil1Loaded || recaptchaResponse === null">
         Registrarse
       </button>
-      
+
       <div *ngIf="loading" class="text-center mt-3">
         <div class="spinner-border" role="status">
             <span class="visually-hidden">Cargando...</span>

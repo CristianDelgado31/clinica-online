@@ -1,81 +1,69 @@
 <div class="form-container">
-    <form>
-      <h2 class="mb-3">Solicitar Turno</h2>
 
-      <!-- Especialidad -->
-      <div class="form-group mb-3">
-        <label for="especialidad">Especialidad</label>
-        <select 
-          id="especialidad" 
-          class="form-control" 
-          [(ngModel)]="selectedEspecialidad" 
-          name="especialidad"  
-          [ngModelOptions]="{standalone: true}" 
-          (change)="onEspecialidadChange()">
-          <option value="">Seleccione una especialidad</option>
-          <option *ngFor="let especialidad of especialidades" [value]="especialidad">
-            {{ especialidad }}
-          </option>
-        </select>
+  <!-- Mostrar solo si no se ha seleccionado una especialidad -->
+  <h2 *ngIf="!pacienteSeleccionado && !isPaciente">Seleccione un paciente</h2>
+  <div *ngIf="!pacienteSeleccionado && !isPaciente" class="especialidades-container">
+    <button *ngFor="let paciente of pacientes" class="paciente-button" (click)="onPacienteSelect(paciente)">
+      <div class="profesional-info">
+        <p>{{ paciente.nombre }} {{ paciente.apellido }}</p>
+        <img [src]="paciente.perfil1" alt="{{ paciente.nombre + paciente.apellido }}" class="especialidad-img" />
       </div>
-    
-      <!-- Especialistas -->
-      <div class="form-group mb-3" *ngIf="arrEspecialistas.length > 0">
-        <label for="especialista">Especialista</label>
-        <select 
-          id="especialista" 
-          class="form-control" 
-          [(ngModel)]="selectedEspecialista" 
-          name="especialista" 
-          [ngModelOptions]="{standalone: true}" 
-          (change)="onEspecialistaChange()">
-          <option value="">Seleccione un especialista</option>
-          <option *ngFor="let especialista of arrEspecialistas" [value]="especialista.id">
-            {{ especialista.nombre }}
-          </option>
-        </select>
-      </div>
-    
-      <!-- Día disponible -->
-      <div class="form-group mb-3" *ngIf="diasDisponibles.length > 0">
-        <label for="dia">Día</label>
-        <select 
-          id="dia" 
-          class="form-control" 
-          [(ngModel)]="selectedDia" 
-          name="dia" 
-          [ngModelOptions]="{standalone: true}">
-          <option value="">Seleccione un día</option>
-          <option *ngFor="let dia of diasDisponibles" [value]="dia.dia">
-            {{ dia.dia }} ({{ dia.fecha | date:'dd/MM/yyyy' }})
-          </option>
-        </select>
-      </div>
-    
-      <!-- Hora disponible -->
-      <div class="form-group mb-3" *ngIf="horariosDisponibles.length > 0">
-        <label for="hora">Hora</label>
-        <select 
-          id="hora" 
-          class="form-control" 
-          [(ngModel)]="selectedHora" 
-          name="hora" 
-          [ngModelOptions]="{standalone: true}">
-          <option value="">Seleccione una hora</option>
-          <option *ngFor="let hora of horariosDisponibles" [value]="hora">
-            {{ hora }}
-          </option>
-        </select>
-      </div>
-  
-      <!-- Botón de Enviar -->
-      <button 
-        type="button" 
-        class="btn btn-primary" 
-        (click)="enviarTurno()"
-        [disabled]="!selectedEspecialidad || !selectedEspecialista || !selectedDia || !selectedHora">
-        Enviar
-      </button>
-    </form>
+    </button>
   </div>
+
+
+  <h2 *ngIf="!especialidadSeleccionada && !isAdmin || pacienteSeleccionado && mostrarEspecialidades" class="mb-3">Seleccione una Especialidad</h2>
   
+  <!-- Mostrar solo si no se ha seleccionado una especialidad -->
+  <div *ngIf="!especialidadSeleccionada && !isAdmin || pacienteSeleccionado && mostrarEspecialidades" class="especialidades-container">
+    <button *ngFor="let especialidad of especialidades" class="especialidad-button" (click)="onEspecialidadSelect(especialidad)">
+      <img [src]="obtenerRutaImagen(especialidad)" alt="{{ especialidad }}" class="especialidad-img" />
+    </button>
+  </div>
+
+  <!-- Mostrar solo si se ha seleccionado una especialidad -->
+  <div *ngIf="especialidadSeleccionada && arrEspecialistas.length > 0 && !mostrarDisponibilidad" class="profesionales-container">
+    <h3>Seleccione un Profesional</h3>
+    <div class="profesionales-list">
+      <button *ngFor="let especialista of arrEspecialistas" class="profesional-button" (click)="onEspecialistaSelect(especialista)">
+        <div class="profesional-info">
+          <p>{{ especialista.nombre }} {{ especialista.apellido }}</p>
+          <img [src]="especialista.perfil1" alt="{{ especialista.nombre }}" class="profesional-img" />
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mostrar solo si se ha seleccionado un especialista -->
+  <div *ngIf="mostrarDisponibilidad && diasDisponibles.length > 0" class="dias-horarios-container">
+    <h3 *ngIf="!mostrarConfirmarTurno">Seleccione un Día y Hora</h3>
+    
+    <div class="dias-list" *ngIf="selectedDia == '' ">
+      <button *ngFor="let dia of diasDisponibles" class="dia-button" (click)="onDiaSelect(dia)">
+        {{ dia.fecha | date: 'dd/MM' }} <!-- Formato de fecha dd/MM -->
+      </button>
+    </div>
+
+    <div class="horarios-list" *ngIf="selectedDia && !mostrarConfirmarTurno">
+      <button *ngFor="let hora of horariosDisponibles" class="horario-button" (click)="onHoraSelect(hora)">
+        {{ hora }} <!-- Formato DD/MM HH:mm -->
+      </button>
+    </div>
+  </div>
+
+  <!-- Mostrar solo si se ha seleccionado un horario -->
+  <div *ngIf="selectedHora && mostrarConfirmarTurno" class="confirmar-turno-container">
+    <h3>Confirmar Turno</h3>
+    <div class="confirmar-turno-info">
+      <p *ngIf="isAdmin" >Paciente: {{ paciente.nombre }} {{ paciente.apellido }}</p>
+      <p>Profesional: {{ selectedEspecialista.nombre }} {{ selectedEspecialista.apellido }}</p>
+      <p>Especialidad: {{ selectedEspecialidad }}</p>
+      <p>Día: {{ selectedDia }}</p>
+      <p>Hora: {{ selectedHora }}</p>
+    </div>
+    <button class="btn btn-primary" (click)="onConfirmarTurno()">Confirmar Turno</button>
+  </div>
+
+  <!-- Agregar botón Volver al inicio -->
+  <button *ngIf="especialidadSeleccionada" class="btn btn-secondary float-start mt-3" (click)="onVolver()">Volver</button>
+</div>

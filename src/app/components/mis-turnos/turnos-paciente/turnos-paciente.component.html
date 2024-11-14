@@ -1,86 +1,103 @@
 <div class="container mt-5">
-    <h3>Mis Turnos</h3>
-  
-    <!-- Filtros -->
-    <div class="row mb-4">
-      <div class="col-12 col-md-6 mb-3 mb-md-0">
-        <label for="especialidadFiltro" class="form-label">Filtrar por Especialidad</label>
-        <input
-          id="especialidadFiltro"
-          type="text"
-          class="form-control form-control-sm"
-          [(ngModel)]="filtroEspecialidad"
-          (input)="filtrarTurnos()"
-          placeholder="Ej: Cardiología"
-        />
-      </div>
-      
-      <div class="col-12 col-md-6 mb-3 mb-md-0">
-        <label for="especialistaFiltro" class="form-label">Filtrar por Especialista</label>
-        <input
-          id="especialistaFiltro"
-          type="text"
-          class="form-control form-control-sm"
-          [(ngModel)]="filtroEspecialista"
-          (input)="filtrarTurnos()"
-          placeholder="Ej: Dr. Juan Pérez"
-        />
-      </div>
-    </div>
-  
-    <!-- Mensaje cuando no hay turnos -->
-    <div *ngIf="turnosFiltrados.length === 0" class="alert alert-warning">
-      No tienes turnos agendados.
-    </div>
-  
-    <!-- Listado de turnos -->
-    <ul class="list-group">
-      <li *ngFor="let turno of turnosFiltrados" class="list-group-item mb-3">
-        <h5>{{ turno.especialidad }} - {{ turno.especialista.nombre }} {{ turno.especialista.apellido }}</h5>
-        <p><strong>Fecha:</strong> {{ turno.dia }} | <strong>Hora:</strong> {{ turno.hora }}</p>
-        
-        <p><strong>Estado:</strong> 
-          <span [ngClass]="{
-            'text-success': turno.estado === 'realizado',
-            'text-primary': turno.estado === 'aceptado',
-            'text-warning': turno.estado === 'pendiente',
-            'text-danger': turno.estado === 'cancelado',
-            'text-secondary': turno.estado === 'rechazado'
-          }">
-            {{ turno.estado | uppercase}}
-          </span>
-        </p>
-  
-        <!-- Acciones según el estado del turno -->
-        <div *ngIf="turno.estado === 'pendiente' || turno.estado === 'aceptado  '" class="btn-group mb-2">
-            <button class="btn btn-danger btn-sm" (click)="cancelarTurno(turno.id)">
-            <i class="bi bi-x-circle"></i> Cancelar Turno
-            </button>
-        </div>
-        
-        <div *ngIf="turno.resenia || turno.comentario" class="btn-group boton mb-2">
-            <button class="btn btn-info btn-sm" (click)="verResena(turno.id)">
-            <i class="bi bi-eye"></i> Ver Reseña
-            </button>
-        </div>
-        
-        <div *ngIf="turno.estado === 'realizado' && turno.comentario && !turno.encuesta" class="btn-group boton mb-2">
-            <button class="btn btn-primary btn-sm" (click)="completarEncuesta(turno.id)">
-            <i class="bi bi-pencil-square"></i> Completar Encuesta
-            </button>
-        </div>
-        
-        <div *ngIf="turno.estado === 'realizado' && !turno.calificacion" class="btn-group boton mb-2">
-            <button class="btn btn-warning btn-sm" (click)="calificarAtencion(turno.id)">
-            <i class="bi bi-star"></i> Calificar Atención
-            </button>
-        </div>
+  <h3>Mis Turnos</h3>
 
-      </li>
-    </ul>
+  <!-- Filtros -->
+  <div class="row mb-4">
+    <div class="col-12 col-md-6 mb-3 mb-md-0">
+      <label for="especialidadFiltro" class="form-label">Filtrar por Especialidad</label>
+      <input
+        id="especialidadFiltro"
+        type="text"
+        class="form-control form-control-sm"
+        [(ngModel)]="filtroEspecialidad"
+        (input)="filtrarTurnos()"
+        placeholder="Ej: Cardiología"
+      />
+    </div>
+    
+    <div class="col-12 col-md-6 mb-3 mb-md-0">
+      <label for="especialistaFiltro" class="form-label">Filtrar por Especialista</label>
+      <input
+        id="especialistaFiltro"
+        type="text"
+        class="form-control form-control-sm"
+        [(ngModel)]="filtroEspecialista"
+        (input)="filtrarTurnos()"
+        placeholder="Ej: Dr. Juan Pérez"
+      />
+    </div>
   </div>
-  
-  <!-- Modal para cancelar el turno -->
+
+  <!-- Mensaje cuando no hay turnos -->
+  <div *ngIf="turnosFiltrados.length === 0" class="alert alert-warning">
+    No tienes turnos agendados.
+  </div>
+
+   <!-- Tabla de turnos -->
+   <div class="table-responsive">
+    <table class="table table-hover table-bordered">
+      <thead class="thead-light">
+        <tr>
+          <th>Especialidad</th>
+          <th>Especialista</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let turno of turnosFiltrados | paginate: { itemsPerPage: pageSize, currentPage: page }">
+          <td>{{ turno.especialidad }}</td>
+          <td>{{ turno.especialista.nombre }} {{ turno.especialista.apellido }}</td>
+          <td>{{ turno.dia }}</td>
+          <td>{{ turno.hora }}</td>
+          <td>
+            <span [ngClass]="{
+              'text-success': turno.estado === 'realizado',
+              'text-warning': turno.estado === 'pendiente',
+              'text-danger': turno.estado === 'cancelado',
+              'text-primary': turno.estado === 'aceptado',
+              'text-secondary': turno.estado === 'rechazado'
+            }">
+              {{ turno.estado | uppercase }}
+            </span>
+          </td>
+          <td>
+            <!-- Acciones según el estado del turno -->
+            <div *ngIf="turno.estado === 'pendiente' || turno.estado === 'aceptado'" class="btn-group">
+              <button class="btn btn-danger btn-sm" (click)="cancelarTurno(turno.id)">
+                <i class="bi bi-x-circle"></i> Cancelar
+              </button>
+            </div>
+            <div *ngIf="turno.resenia || turno.comentario" class="btn-group">
+              <button class="btn btn-info btn-sm" (click)="verResena(turno.id)">
+                <i class="bi bi-eye"></i> Ver Reseña
+              </button>
+            </div>
+            <div *ngIf="turno.estado === 'realizado' && turno.comentario && !turno.encuesta" class="btn-group">
+              <button class="btn btn-primary btn-sm" (click)="completarEncuesta(turno.id)">
+                <i class="bi bi-pencil-square"></i> Completar Encuesta
+              </button>
+            </div>
+            <div *ngIf="turno.estado === 'realizado' && !turno.calificacion" class="btn-group">
+              <button class="btn btn-warning btn-sm" (click)="calificarAtencion(turno.id)">
+                <i class="bi bi-star"></i> Calificar Atención
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginación -->
+  <div class="d-flex justify-content-center">
+    <pagination-controls (pageChange)="page = $event"></pagination-controls>
+  </div>
+</div>
+
+<!-- Modal para cancelar el turno -->
 <div class="modal fade" id="cancelarTurnoModal" tabindex="-1" aria-labelledby="cancelarTurnoModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -100,7 +117,7 @@
   </div>
 </div>
 
-<!-- Modal para calificar el turno, se califica con un comentario -->
+<!-- Modal para calificar el turno -->
 <div class="modal fade" id="calificarTurnoModal" tabindex="-1" aria-labelledby="calificarTurnoModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -128,11 +145,9 @@
         <h5 class="modal-title" id="completarEncuestaModalLabel">Encuesta de Atención</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body
-      ">
+      <div class="modal-body">
         <div class="mb-3">
-          <label for="pregunta1" class="form-label
-          ">¿Cómo calificarías la atención recibida?</label>
+          <label for="pregunta1" class="form-label">¿Cómo calificarías la atención recibida?</label>
           <select id="pregunta1" class="form-select" [(ngModel)]="encuesta.atencion">
             <option value="1">Muy mala</option>
             <option value="2">Mala</option>
@@ -142,8 +157,7 @@
           </select>
         </div>
         <div class="mb-3">
-          <label for="pregunta2" class="form-label
-          ">¿Cómo calificarías la puntualidad del especialista?</label>
+          <label for="pregunta2" class="form-label">¿Cómo calificarías la puntualidad del especialista?</label>
           <select id="pregunta2" class="form-select" [(ngModel)]="encuesta.puntualidad">
             <option value="1">Muy mala</option>
             <option value="2">Mala</option>
@@ -153,8 +167,7 @@
           </select>
         </div>
         <div class="mb-3">
-          <label for="pregunta3" class="form-label
-          ">¿Cómo calificarías la atención del personal administrativo?</label>
+          <label for="pregunta3" class="form-label">¿Cómo calificarías la atención del personal administrativo?</label>
           <select id="pregunta3" class="form-select" [(ngModel)]="encuesta.administracion">
             <option value="1">Muy mala</option>
             <option value="2">Mala</option>
@@ -164,8 +177,7 @@
           </select>
         </div>
         <div class="mb-3">
-          <label for="pregunta4" class="form-label  
-          ">¿Recomendarías a este especialista?</label>
+          <label for="pregunta4" class="form-label">¿Recomendarías a este especialista?</label>
           <select id="pregunta4" class="form-select" [(ngModel)]="encuesta.recomendacion">
             <option value="1">No</option>
             <option value="2">No estoy seguro</option>
@@ -181,10 +193,7 @@
   </div>
 </div>
 
-
-
 <!-- Modal para ver el comentario -->
-
 <div class="modal fade" id="verComentarioModal" tabindex="-1" aria-labelledby="verResenaModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -192,14 +201,15 @@
         <h5 class="modal-title" id="verResenaModalLabel">Reseña del Turno</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body
-      ">
+      <div class="modal-body">
         <p><strong>Comentario:</strong> {{ comentarioPacienteSeleccionado }}</p>
-        <!-- calificacion del paciente al especialista -->
-        <p *ngIf="comentarioCalificacion"><strong>Calificación:</strong> {{ comentarioCalificacion }} </p>
+        <!-- calificación del paciente al especialista -->
+        <p *ngIf="comentarioCalificacion"><strong>Calificación:</strong> {{ comentarioCalificacion }}</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
+</div>
+

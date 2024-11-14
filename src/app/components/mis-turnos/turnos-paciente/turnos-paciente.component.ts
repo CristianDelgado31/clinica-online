@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 interface Encuesta {
   atencion: number;
@@ -13,7 +14,7 @@ interface Encuesta {
 @Component({
   selector: 'app-turnos-paciente',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgxPaginationModule],
   templateUrl: './turnos-paciente.component.html',
   styleUrl: './turnos-paciente.component.css'
 })
@@ -38,6 +39,10 @@ export class TurnosPacienteComponent implements OnInit{
     administracion: 0,
     recomendacion: 0
   };
+
+  //paginacion
+  page: number = 1;  // Página de paginación
+  pageSize: number = 5;  // Número de turnos por página
 
   constructor(private userService: UserService) { }
 

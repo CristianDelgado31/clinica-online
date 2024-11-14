@@ -1,0 +1,86 @@
+<div class="container mt-5">
+  <h3>Turnos de la Clínica</h3>
+
+  <!-- Filtro combinado -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <label for="filtroCombinado" class="form-label">Filtrar por Especialidad o Especialista</label>
+      <input
+        id="filtroCombinado"
+        type="text"
+        class="form-control form-control-sm"
+        [(ngModel)]="filtroCombinado"
+        (input)="filtrarTurnos()"
+        placeholder="Ej: Cardiología, Dr. Juan Pérez"
+      />
+    </div>
+  </div>
+
+  <!-- Tabla de turnos -->
+  <div class="table-responsive">
+    <table class="table table-hover table-bordered">
+      <thead class="thead-light">
+        <tr>
+          <th>Especialidad</th>
+          <th>Paciente</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let turno of turnosFiltrados | paginate: { itemsPerPage: pageSize, currentPage: page }">
+          <td>{{ turno.especialidad }}</td>
+          <td>{{ turno.paciente.nombre }} {{ turno.paciente.apellido }}</td>
+          <td>{{ turno.dia }}</td>
+          <td>{{ turno.hora }}</td>
+          <td>
+            <span [ngClass]="{
+              'text-success': turno.estado === 'realizado',
+              'text-warning': turno.estado === 'pendiente',
+              'text-danger': turno.estado === 'cancelado',
+              'text-primary': turno.estado === 'aceptado',
+              'text-secondary': turno.estado === 'rechazado'
+            }">
+              {{ turno.estado | uppercase }}
+            </span>
+          </td>
+          <td>
+            <!-- Acciones según el estado del turno -->
+            <div *ngIf="turno.estado === 'pendiente'" class="btn-group">
+              <button class="btn btn-danger btn-sm" (click)="cancelarTurno(turno.id)">
+                <i class="bi bi-x-circle"></i> Cancelar
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginación -->
+  <div class="d-flex justify-content-center">
+    <pagination-controls (pageChange)="page = $event"></pagination-controls>
+  </div>
+</div>
+
+<!-- Modal para cancelar turno -->
+<div class="modal fade" id="cancelarTurnoModal" tabindex="-1" aria-labelledby="cancelarTurnoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cancelarTurnoModalLabel">Cancelar Turno</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <label for="comentarioCancelacion">Comentario de cancelación:</label>
+        <textarea id="comentarioCancelacion" class="form-control" [(ngModel)]="comentarioCancelacion" rows="3" placeholder="Escribe el motivo de la cancelación..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-danger" (click)="confirmarCancelacion()">Confirmar Cancelación</button>
+      </div>
+    </div>
+  </div>
+</div>
