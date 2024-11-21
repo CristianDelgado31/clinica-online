@@ -1,9 +1,12 @@
 .container {
     margin-top: 20px;
+    background-color: white;
   }
   
   .table-responsive {
     margin-top: 20px;
+    max-height: 400px; /* Limitar la altura de la tabla */
+    overflow-y: auto; /* Agregar scroll vertical */
   }
   
   .table {
@@ -33,4 +36,9 @@
   
   .table-dark.table-bordered {
     border: 0;
+  }
+  
+  canvas {
+    max-width: 100%;
+    height: auto;
   }

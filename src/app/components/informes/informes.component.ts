@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { TurnoService } from '../../services/turno.service';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
+import { Chart, registerables } from 'chart.js';
+
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-informes',
@@ -9,18 +12,22 @@ import { DatePipe, NgFor, NgIf } from '@angular/common';
   imports: [DatePipe, NgFor, NgIf],
   providers: [DatePipe],
   templateUrl: './informes.component.html',
-  styleUrl: './informes.component.css'
+  styleUrls: ['./informes.component.css']
 })
-export class InformesComponent implements OnInit{
-
+export class InformesComponent implements OnInit {
   pacientes: any;
   especialistas: any;
   admins: any;
   logUser: any;
   turnos: any;
   usuariosIngresos: any[] = [];
+  chart: any;
 
-  constructor(private userService: UserService, private turnoService: TurnoService, private datePipe: DatePipe) { }
+  constructor(
+    private userService: UserService,
+    private turnoService: TurnoService,
+    private datePipe: DatePipe
+  ) {}
 
   ngOnInit(): void {
     this.userService.getPacientes().subscribe((data: any) => {
@@ -77,21 +84,47 @@ export class InformesComponent implements OnInit{
         }
       }
     });
-    // console.log(usuariosMap);
 
     this.usuariosIngresos = Array.from(usuariosMap.values());
-    console.log(this.usuariosIngresos);
+    setTimeout(() => this.createChart(), 0); // Asegúrate de que el DOM esté actualizado antes de crear el gráfico
+  }
+
+  createChart() {
+    const labels = this.usuariosIngresos.map(usuario => usuario.email);
+    const data = this.usuariosIngresos.map(usuario => usuario.count);
+
+    if (this.chart) {
+      this.chart.destroy();
+    }
+
+    const ctx = document.getElementById('myChart') as HTMLCanvasElement;
+    if (ctx) {
+      this.chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Cantidad de Ingresos',
+            data: data,
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
   }
 
   convertTimestampToDate(timestamp: any): string {
     const date = new Date(timestamp.seconds * 1000); // Convertir segundos a milisegundos
     return this.datePipe.transform(date, 'dd/MM/yyyy HH:mm:ss') || '';
   }
-
-
-
-
-
-
-
 }

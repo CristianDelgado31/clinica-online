@@ -24,4 +24,9 @@
     <div *ngIf="!usuariosIngresos || usuariosIngresos.length === 0">
       <p>No hay datos de ingresos disponibles.</p>
     </div>
+  
+    <div *ngIf="usuariosIngresos && usuariosIngresos.length > 0">
+      <canvas id="myChart"></canvas>
+    </div>
   </div>
+  
