@@ -35,21 +35,17 @@
   </div>
 
   <!-- Mostrar solo si se ha seleccionado un especialista -->
-  <div *ngIf="mostrarDisponibilidad && diasDisponibles.length > 0" class="dias-horarios-container">
-    <h3 *ngIf="!mostrarConfirmarTurno">Seleccione un Día y Hora</h3>
-    
-    <div class="dias-list" *ngIf="selectedDia == '' ">
-      <button *ngFor="let dia of diasDisponibles" class="dia-button" (click)="onDiaSelect(dia)">
-        {{ dia.fecha | date: 'dd/MM' }} <!-- Formato de fecha dd/MM -->
-      </button>
-    </div>
-
-    <div class="horarios-list" *ngIf="selectedDia && !mostrarConfirmarTurno">
-      <button *ngFor="let hora of horariosDisponibles" class="horario-button" (click)="onHoraSelect(hora)">
-        {{ hora }} <!-- Formato DD/MM HH:mm -->
-      </button>
+  <div *ngIf="mostrarDisponibilidad && diasDisponibles.length > 0 && !mostrarConfirmarTurno" class="dias-horarios-container">
+    <h3>Seleccione un Horario</h3>
+    <div class="horarios-wrapper">
+      <div class="horarios-list">
+        <button *ngFor="let hora of horariosDisponibles" class="horario-button" (click)="onHoraSelect(hora)">
+          {{ hora }}
+        </button>
+      </div>
     </div>
   </div>
+  
 
   <!-- Mostrar solo si se ha seleccionado un horario -->
   <div *ngIf="selectedHora && mostrarConfirmarTurno" class="confirmar-turno-container">
@@ -58,8 +54,7 @@
       <p *ngIf="isAdmin" >Paciente: {{ paciente.nombre }} {{ paciente.apellido }}</p>
       <p>Profesional: {{ selectedEspecialista.nombre }} {{ selectedEspecialista.apellido }}</p>
       <p>Especialidad: {{ selectedEspecialidad }}</p>
-      <p>Día: {{ selectedDia }}</p>
-      <p>Hora: {{ selectedHora }}</p>
+      <p>Fecha: {{ selectedHora }}</p>
     </div>
     <button class="btn btn-primary" (click)="onConfirmarTurno()">Confirmar Turno</button>
   </div>

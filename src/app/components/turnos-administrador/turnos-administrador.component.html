@@ -22,6 +22,7 @@
       <thead class="thead-light">
         <tr>
           <th>Especialidad</th>
+          <th>Especialista</th>
           <th>Paciente</th>
           <th>Fecha</th>
           <th>Hora</th>
@@ -32,6 +33,7 @@
       <tbody>
         <tr *ngFor="let turno of turnosFiltrados | paginate: { itemsPerPage: pageSize, currentPage: page }">
           <td>{{ turno.especialidad }}</td>
+          <td>{{ turno.especialista.nombre }} {{ turno.especialista.apellido }}</td>
           <td>{{ turno.paciente.nombre }} {{ turno.paciente.apellido }}</td>
           <td>{{ turno.dia }}</td>
           <td>{{ turno.hora }}</td>

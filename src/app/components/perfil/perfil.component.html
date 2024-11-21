@@ -4,36 +4,36 @@
   <div *ngIf="user" class="profile-card bg-light p-4 rounded shadow">
     <div class="row">
       <div class="col-md-4 text-center">
-        <div class="mb-3" *ngIf="user.perfil1">
+        <div class="mb-3" *ngIf="user.perfil1" appHoverZoom>
           <img [src]="user.perfil1" alt="Perfil 1" class="img-thumbnail profile-img">
         </div>
       </div>
       <div class="col-md-4">
         <div class="mb-3">
-          <strong>Nombre: </strong> <span class="text-muted">{{ user.nombre }}</span>
+          <strong appHighlight="orange">Nombre: </strong> <span class="text-muted">{{ user.nombre | capitalize }}</span>
         </div>
         <div class="mb-3">
-          <strong>Apellido: </strong> <span class="text-muted">{{ user.apellido }}</span>
+          <strong appHighlight="orange">Apellido: </strong> <span class="text-muted">{{ user.apellido | capitalize }}</span>
         </div>
         <div class="mb-3">
-          <strong>Edad: </strong> <span class="text-muted">{{ user.edad }}</span>
+          <strong appHighlight="orange">Edad: </strong> <span class="text-muted">{{ user.edad }}</span>
         </div>
         <div class="mb-3">
-          <strong>DNI: </strong> <span class="text-muted">{{ user.dni }}</span>
+          <strong appHighlight="orange">DNI: </strong> <span class="text-muted">{{ user.dni }}</span>
         </div>
         <div class="mb-3">
-          <strong>Email: </strong> <span class="text-muted">{{ user.email }}</span>
+          <strong appHighlight="orange">Email: </strong> <span class="text-muted">{{ user.email }}</span>
         </div>
         <div class="mb-3" *ngIf="user.obraSocial">
-          <strong>Obra social: </strong> <span class="text-muted">{{ user.obraSocial }}</span>
+          <strong appHighlight="orange">Obra social: </strong> <span class="text-muted">{{ user.obraSocial }}</span>
         </div>
         <div class="mb-3" *ngIf="user.especialidades">
-          <strong>Especialidades: </strong>
+          <strong appHighlight="orange">Especialidades: </strong>
           <span class="text-muted" *ngFor="let especialidad of user.especialidades">{{ especialidad }} </span>
         </div>
       </div>
       <div class="col-md-4 text-center">
-        <div class="mb-3" *ngIf="user.perfil2">
+        <div class="mb-3" *ngIf="user.perfil2" appHoverZoom>
           <img [src]="user.perfil2" alt="Perfil 2" class="img-thumbnail profile-img">
         </div>
       </div>
@@ -62,35 +62,110 @@
     </div>
   </div>
 
-  <!-- Mostrar disponibilidades existentes -->
-  <!-- <div *ngIf="disponibilidades$ | async as disponibilidades;">
-  <div *ngIf="disponibilidades.length > 0" class="table-responsive mt-4">
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Especialidad</th>
-          <th>Lunes</th>
-          <th>Martes</th>
-          <th>Miércoles</th>
-          <th>Jueves</th>
-          <th>Viernes</th>
-          <th>Horario</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let disponibilidad of disponibilidades">
-          <td>{{ disponibilidad.especialidad }}</td>
-          <td>{{ disponibilidad.lunes ? 'Sí' : 'No' }}</td>
-          <td>{{ disponibilidad.martes ? 'Sí' : 'No' }}</td>
-          <td>{{ disponibilidad.miercoles ? 'Sí' : 'No' }}</td>
-          <td>{{ disponibilidad.jueves ? 'Sí' : 'No' }}</td>
-          <td>{{ disponibilidad.viernes ? 'Sí' : 'No' }}</td>
-          <td>{{ disponibilidad.horaInicio }} - {{ disponibilidad.horaFin }}</td>
-        </tr>
-      </tbody>
-    </table>
+  <!-- Botón para descargar historia clínica alineado a la derecha -->
+  <div class="text-end">
+    <button *ngIf="isPacient" class="btn btn-dark mt-3" (click)="descargarHistoriaClinica()">Descargar Historia Clínica</button>
   </div>
-</div> -->
+  <div class="text-end">
+    <button *ngIf="isPacient" class="btn btn-warning mt-3" (click)="mostrarHistoriaClinica()">Ver Historia Clínica</button>
+  </div>
+  
+</div>
 
+<!-- Modal para mostrar la historia clínica -->
+<div class="modal fade" id="modalHistoriaClinica" tabindex="-1" aria-labelledby="historiaClinicaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="historiaClinicaModalLabel">Historia Clínica</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" style="max-height: 600px; overflow-y: auto;">
+              <div *ngIf="historiaClinica && historiaClinica.length > 0">
+                  <div *ngFor="let turno of historiaClinica">
+                      <div class="card mb-3">
+                          <div class="card-body">
+                              <h5 class="card-title">Datos Generales</h5>
+                              <p class="card-text"><strong>Especialista:</strong> {{ turno.especialista }}</p>
+                              <p class="card-text"><strong>Especialidad:</strong> {{ turno.especialidad }}</p>
+                              <p class="card-text"><strong>Día:</strong> {{ turno.dia }}</p>
+                              <p class="card-text"><strong>Hora:</strong> {{ turno.hora | timeFormat}}</p>
+                              <p class="card-text"><strong>Altura:</strong> {{ turno.altura }}</p>
+                              <p class="card-text"><strong>Peso:</strong> {{ turno.peso }}</p>
+                              <p class="card-text"><strong>Presión:</strong> {{ turno.presion }}</p>
+                              <p class="card-text"><strong>Temperatura:</strong> {{ turno.temperatura }}</p>
+                          </div>
+                          <div class="card-body">
+                              <h5 class="card-title">Datos Dinámicos</h5>
+                              <div *ngFor="let dato of turno.datosDinamicos">
+                                  <p class="card-text"><strong>{{ dato.clave }}:</strong> {{ dato.valor }}</p>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div *ngIf="!historiaClinica || historiaClinica.length === 0">
+                  <p>No hay datos de historia clínica disponibles.</p>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
 
+<!-- Modal para opciones de descarga -->
+<div class="modal fade" id="modalDescargaHistoriaClinica" tabindex="-1" aria-labelledby="modalDescargaHistoriaClinicaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDescargaHistoriaClinicaLabel">Opciones de Descarga</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Seleccione una opción de descarga:</p>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-primary" (click)="descargaHistoriaClinicaCompleta()">Descarga Completa</button>
+                    <button class="btn btn-secondary" (click)="mostrarEspecialistas()">Descargar por Especialista</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para mostrar los especialistas -->
+<div class="modal fade" id="modalDescargaPorEspecialista" tabindex="-1" aria-labelledby="modalDescargaPorEspecialistaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="modalDescargaPorEspecialistaLabel">Historia Clinica por Especialista</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" style="max-height: 600px; overflow-y: auto;">
+              <div *ngIf="especialistas && especialistas.length > 0">
+                  <div *ngFor="let especialista of especialistas" class="card mb-3">
+                      <div class="row g-0">
+                          <div class="col-md-4">
+                              <img [src]="especialista.perfil1" class="img-fluid rounded-start" alt="Foto de perfil">
+                          </div>
+                          <div class="col-md-8">
+                              <div class="card-body">
+                                  <h5 class="card-title">{{ especialista.nombre }} {{ especialista.apellido }}</h5>
+                                  <p class="card-text"><strong>DNI:</strong> {{ especialista.dni }}</p>
+                                  <p class="card-text"><strong>Email:</strong> {{ especialista.email }}</p>
+                                  <!-- Especialidades -->
+                                  <p class="card-text"><strong>Especialidades: </strong>
+                                      <span *ngFor="let especialidad of especialista.especialidades">{{ especialidad }} </span>
+                                  </p>
+                                  <!-- Botón para descargar historia clínica por especialista -->
+                                  <button class="btn btn-primary mt-2" (click)="descargarHistoriaClinicaPorEspecialista(especialista)">Descargar Historia Clínica</button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div *ngIf="!especialistas || especialistas.length === 0">
+                  <p>No hay especialistas disponibles.</p>
+              </div>
+          </div>
+      </div>
+  </div>
 </div>

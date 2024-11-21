@@ -34,4 +34,6 @@ export class AuthService {
     const user = this.getUser();
     return user && user.isAdmin;
   }
+
+  
 }

@@ -1,0 +1,36 @@
+.container {
+    margin-top: 20px;
+  }
+  
+  .table-responsive {
+    margin-top: 20px;
+  }
+  
+  .table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+  }
+  
+  .table-bordered {
+    border: 1px solid #dee2e6;
+  }
+  
+  .table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+  }
+  
+  .table-dark {
+    color: #fff;
+    background-color: #343a40;
+  }
+  
+  .table-dark th,
+  .table-dark td,
+  .table-dark thead th {
+    border-color: #454d55;
+  }
+  
+  .table-dark.table-bordered {
+    border: 0;
+  }

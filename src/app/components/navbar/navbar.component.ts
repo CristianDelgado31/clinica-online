@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { NgIf } from '@angular/common';
+import { ClickHighlightDirective } from '../../directivas/click-highlight.directive';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, NgIf],
+  imports: [RouterLink, NgIf, ClickHighlightDirective],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })

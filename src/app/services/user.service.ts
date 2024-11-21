@@ -30,6 +30,11 @@ export class UserService {
     return observable;
   }
 
+  getEspecialista(email: string) {
+    const docRef = doc(this.firestore, 'especialistas', email);
+    return getDoc(docRef);
+  }
+
   // Obtener especialistas por especialidad seleccionada
   getEspecialistasPorEspecialidad(especialidad: string): Observable<any[]> {
     const col = collection(this.firestore, 'especialistas');
@@ -39,9 +44,13 @@ export class UserService {
   
   getTurnos(email: string) {
     const col = collection(this.firestore, 'turnos');
-    const q = query(col, where('paciente.email', '==', email));
+    const q = query(
+      col,
+      where('paciente.email', '==', email)
+    );
     return collectionData(q, { idField: 'id' });
   }
+  
 
   getTurnosEspecialista(email: string) {
     const col = collection(this.firestore, 'turnos');
@@ -77,5 +86,27 @@ export class UserService {
   completarEncuesta(turnoId: string, encuesta: any) {
     const docRef = doc(this.firestore, 'turnos', turnoId);
     return updateDoc(docRef, { encuesta });
+  }
+
+  agregarHistoriaClinica(turnoId: string, historiaClinica: any) {
+    const docRef = doc(this.firestore, 'turnos', turnoId);
+    return updateDoc(docRef, { historiaClinica });
+  }
+
+  logUsuarios(email: string) {
+    const fecha = Timestamp.now();
+    const col = collection(this.firestore, 'logUsuarios');
+    const data = {
+      email,
+      fecha
+    };
+    return addDoc(col, data);
+  }
+
+  getLogUsuarios() {
+    const col = collection(this.firestore, 'logUsuarios');
+    const orderedQuery = query(col, orderBy('fecha', 'asc'));
+    const observable = collectionData(orderedQuery, { idField: 'id' });
+    return observable;
   }
 }

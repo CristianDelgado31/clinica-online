@@ -1,0 +1,27 @@
+<div class="container mt-5">
+    <h2 class="text-center text-dark">Informes de Ingresos al Sistema</h2>
+    
+    <div *ngIf="usuariosIngresos && usuariosIngresos.length > 0" class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Email</th>
+            <th>Cantidad de Ingresos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let usuario of usuariosIngresos">
+            <td>{{ usuario.nombre }}</td>
+            <td>{{ usuario.apellido }}</td>
+            <td>{{ usuario.email }}</td>
+            <td>{{ usuario.count }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="!usuariosIngresos || usuariosIngresos.length === 0">
+      <p>No hay datos de ingresos disponibles.</p>
+    </div>
+  </div>

@@ -43,6 +43,7 @@ export class TurnosPacienteComponent implements OnInit{
   //paginacion
   page: number = 1;  // Página de paginación
   pageSize: number = 5;  // Número de turnos por página
+  terminoBusqueda: string = ''; // Término de búsqueda
 
   constructor(private userService: UserService) { }
 
@@ -52,22 +53,46 @@ export class TurnosPacienteComponent implements OnInit{
       const parsedUser = JSON.parse(user);
       this.userService.getTurnos(parsedUser.email).subscribe((turnos: any[]) => {
         this.turnos = turnos;
-        this.turnosFiltrados = turnos; // Inicialmente mostramos todos los turnos
+
+        this.turnos = turnos.sort((a, b) => {
+          // Combinar día y hora y convertirlas en objetos de fecha para comparación
+          const dateA = this.convertToDate(a.dia, a.hora);
+          const dateB = this.convertToDate(b.dia, b.hora);
+          return dateA.getTime() - dateB.getTime(); // Orden ascendente
+        });
+
+        this.turnosFiltrados = this.turnos; // Inicialmente mostramos todos los turnos
         console.log('Turnos', this.turnos);
       });
 
     }
   }
 
-  filtrarTurnos(): void {
-    // Filtramos los turnos en base a los valores de los filtros
+  // Método para convertir 'dia' y 'hora' en un objeto Date
+  convertToDate(dia: string, hora: string): Date {
+    const [day, month] = dia.split('/').map(Number);
+    const [hours, minutes] = hora.split(':').map(Number);
+    return new Date(new Date().getFullYear(), month - 1, day, hours, minutes);
+  }
+
+  filtrarTurnos() {
+    const termino = this.terminoBusqueda.toLowerCase();
     this.turnosFiltrados = this.turnos.filter(turno => {
-      const filtroPorEspecialidad = turno.especialidad.toLowerCase().includes(this.filtroEspecialidad.toLowerCase());
-      const filtroPorEspecialista = turno.especialista.nombre.toLowerCase().includes(this.filtroEspecialista.toLowerCase()) || 
-        turno.especialista.apellido.toLowerCase().includes(this.filtroEspecialista.toLowerCase());
-      
-      // Ambas condiciones deben ser verdaderas para mostrar el turno
-      return filtroPorEspecialidad && filtroPorEspecialista;
+      const keys = ['especialidad', 'especialista.nombre', 'especialista.apellido', 'dia', 'hora', 'estado', 'historiaClinica.altura', 'historiaClinica.peso', 'historiaClinica.temperatura', 'historiaClinica.presion'];
+      for (const key of keys) {
+        const value = key.split('.').reduce((o, i) => (o ? o[i] : null), turno);
+        if (value && value.toString().toLowerCase().includes(termino)) {
+          return true;
+        }
+      }
+      if (turno.historiaClinica && turno.historiaClinica.datosDinamicos) {
+        for (const dato of turno.historiaClinica.datosDinamicos) {
+          if (dato.clave.toLowerCase().includes(termino) || dato.valor.toLowerCase().includes(termino)) {
+            return true;
+          }
+        }
+      }
+      return false;
     });
   }
 

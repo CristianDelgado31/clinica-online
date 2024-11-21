@@ -1,0 +1,65 @@
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Pacientes</h2>
+  
+    <div class="d-flex flex-row flex-nowrap overflow-auto justify-content-center">
+      <div *ngFor="let paciente of pacientes" class="d-flex flex-column align-items-center mb-3 me-3 p-3 border" style="cursor: pointer; min-width: 150px;">
+        <button class="btn btn-outline-primary rounded-circle d-flex flex-column align-items-center" (click)="mostrarHistoriaClinica(paciente.email)">
+          <img [src]="paciente.perfil1" alt="Imagen de perfil" class="img-thumbnail mb-2" style="width: 100px; height: 100px;">
+          <h5 class="mb-2 text-center">{{ paciente.nombre }} {{ paciente.apellido }}</h5>
+        </button>
+      </div>
+    </div>
+  
+    <!-- Modal para mostrar la historia clínica del paciente seleccionado -->
+    <div class="modal fade" id="modalHistoriaClinica" tabindex="-1" aria-labelledby="modalHistoriaClinicaLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalHistoriaClinicaLabel">Historia Clínica</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" style="max-height: 600px; overflow-y: auto;">
+            <div *ngIf="turnosPaciente && turnosPaciente.length > 0">
+              <div *ngFor="let turno of turnosPaciente" class="card mb-3">
+                <div class="card-body">
+                  <h5 class="card-title">Datos Generales</h5>
+                  <p class="card-text"><strong>Especialidad:</strong> {{ turno.especialidad }}</p>
+                  <p class="card-text"><strong>Día:</strong> {{ turno.dia }}</p>
+                  <p class="card-text"><strong>Hora:</strong> {{ turno.hora | timeFormat}}</p>
+                  <p class="card-text"><strong>Altura:</strong> {{ turno.historiaClinica.altura }}</p>
+                  <p class="card-text"><strong>Peso:</strong> {{ turno.historiaClinica.peso }}</p>
+                  <p class="card-text"><strong>Presión:</strong> {{ turno.historiaClinica.presion }}</p>
+                  <p class="card-text"><strong>Temperatura:</strong> {{ turno.historiaClinica.temperatura }}</p>
+                  <button class="btn btn-primary" (click)="mostrarResena(turno)">Ver Reseña</button>
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Datos Dinámicos</h5>
+                  <div *ngFor="let dato of turno.historiaClinica.datosDinamicos">
+                    <p class="card-text"><strong>{{ dato.clave }}:</strong> {{ dato.valor }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="!turnosPaciente || turnosPaciente.length === 0">
+              <p>No hay datos de historia clínica disponibles.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Modal para mostrar la reseña de la consulta -->
+    <div class="modal fade" id="modalResena" tabindex="-1" aria-labelledby="modalResenaLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalResenaLabel">Reseña de la Consulta</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>{{ resenaConsulta }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

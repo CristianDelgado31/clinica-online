@@ -3,28 +3,12 @@
 
   <!-- Filtros -->
   <div class="row mb-4">
-    <div class="col-12 col-md-6 mb-3 mb-md-0">
-      <label for="especialidadFiltro" class="form-label">Filtrar por Especialidad</label>
-      <input
-        id="especialidadFiltro"
-        type="text"
-        class="form-control form-control-sm"
-        [(ngModel)]="filtroEspecialidad"
-        (input)="filtrarTurnos()"
-        placeholder="Ej: Cardiología"
-      />
-    </div>
-
-    <div class="col-12 col-md-6 mb-3 mb-md-0">
-      <label for="pacienteFiltro" class="form-label">Filtrar por Paciente</label>
-      <input
-        id="pacienteFiltro"
-        type="text"
-        class="form-control form-control-sm"
-        [(ngModel)]="filtroPaciente"
-        (input)="filtrarTurnos()"
-        placeholder="Ej: Juan Pérez"
-      />
+    <div class="col-12">
+      <div class="col-12">
+        <div class="search-bar">
+          <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="terminoBusqueda" (input)="filtrarTurnos()">
+        </div>
+      </div>
     </div>
   </div>
 
@@ -82,12 +66,19 @@
                 <i class="bi bi-pencil-square"></i> Finalizar
               </button>
             </div>
-
+                        
             <div *ngIf="turno.comentario" class="btn-group">
               <button class="btn btn-info btn-sm" (click)="verResena(turno.id)">
                 <i class="bi bi-eye"></i> Ver Reseña
               </button>
             </div>
+
+            <div *ngIf="turno.estado === 'realizado' && !turno.historiaClinica" class="btn-group">
+              <button class="btn btn btn-dark btn-sm" (click)="realizarHistoriaClinica(turno.id)">
+                <i class="bi bi-eye"></i> Realizar Historia clinica
+              </button>
+            </div>
+
           </td>
         </tr>
       </tbody>
@@ -165,6 +156,64 @@
   </div>
 </div>
 
+<!-- Modal Historia Clínica -->
+<div class="modal fade" id="historiaClinicaModal" tabindex="-1" aria-labelledby="historiaClinicaModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="historiaClinicaModalLabel">Historia Clínica</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="historiaClinicaForm.reset()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="historiaClinicaForm">
+          <div class="mb-3">
+            <label for="altura" class="form-label">Altura</label>
+            <input type="text" class="form-control" id="altura" formControlName="altura">
+            <div *ngIf="historiaClinicaForm.get('altura')?.invalid && historiaClinicaForm.get('altura')?.touched" class="text-danger">
+              Altura es obligatoria y debe ser un número decimal con hasta dos decimales.
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="peso" class="form-label">Peso</label>
+            <input type="text" class="form-control" id="peso" formControlName="peso">
+            <div *ngIf="historiaClinicaForm.get('peso')?.invalid && historiaClinicaForm.get('peso')?.touched" class="text-danger">
+              Peso es obligatorio y debe ser un número entero o decimal con hasta dos decimales.
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="temperatura" class="form-label">Temperatura</label>
+            <input type="text" class="form-control" id="temperatura" formControlName="temperatura">
+            <div *ngIf="historiaClinicaForm.get('temperatura')?.invalid && historiaClinicaForm.get('temperatura')?.touched" class="text-danger">
+              Temperatura es obligatoria y debe ser un número decimal con hasta un decimal.
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="presion" class="form-label">Presión</label>
+            <input type="text" class="form-control" id="presion" formControlName="presion">
+            <div *ngIf="historiaClinicaForm.get('presion')?.invalid && historiaClinicaForm.get('presion')?.touched" class="text-danger">
+              Presión es obligatoria y debe ser en el formato "120/80".
+            </div>
+          </div>
+          <div formArrayName="datosDinamicos">
+            <div class="mb-3" *ngFor="let dato of datosDinamicos.controls; let i = index" [formGroupName]="i">
+              <label for="clave{{i}}" class="form-label">Clave</label>
+              <input type="text" class="form-control" id="clave{{i}}" formControlName="clave">
+              <div *ngIf="dato.get('clave')?.invalid && dato.get('clave')?.touched" class="text-danger">Clave es obligatoria</div>
+              <label for="valor{{i}}" class="form-label">Valor</label>
+              <input type="text" class="form-control" id="valor{{i}}" formControlName="valor">
+              <div *ngIf="dato.get('valor')?.invalid && dato.get('valor')?.touched" class="text-danger">Valor es obligatorio</div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary" (click)="agregarDatoDinamico()">Agregar Dato Dinámico</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="historiaClinicaForm.reset()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarHistoriaClinica()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Modal para ver el comentario -->
 <div class="modal fade" id="verComentarioModal" tabindex="-1" aria-labelledby="verResenaModalLabel" aria-hidden="true">

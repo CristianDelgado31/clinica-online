@@ -1,9 +1,13 @@
 <div class="container mt-4">
   <h2 class="mb-4 text-center">Sección de Usuarios</h2>
 
-  <!-- <div class="text-end mb-3">
-    <button (click)="openUserTypeModal()" class="btn btn-primary">Agregar Usuario</button>
-  </div> -->
+  <div class="text-end mb-3">
+    <!-- boton excel usuario de color verde -->
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exportarUsuariosModal">
+      Exportar Usuarios
+    </button>
+
+  </div>
   
   <div class="text-end mb-3">
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userTypeModal">
@@ -23,6 +27,7 @@
           <th>Edad</th>
           <th>Obra Social</th>
           <th>Imagen</th>
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -36,12 +41,97 @@
           <td>
             <img [src]="user.perfil1" alt="Imagen de perfil" class="img-thumbnail">
           </td>
+          <td *ngIf="verificarHistoriaClinica(user)">
+            <button class="btn btn-dark" (click)="mostrarHistoriaClinica(user)">Historia Clinica</button>
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
 
   <!-- Modals -->
+  <!-- Modal para exportar usuarios -->
+  <div class="modal fade" id="exportarUsuariosModal" tabindex="-1" aria-labelledby="exportarUsuariosModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exportarUsuariosModalLabel">Exportar Usuarios</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Seleccione una opción de exportación:</p>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary" (click)="exportarTodosLosUsuarios()">Todos los Usuarios</button>
+            <button class="btn btn-secondary" (click)="exportarUnUsuario()">Un Usuario</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- Modal para mostrar todos los pacientes -->
+  <div class="modal fade" id="modalDescargaUsuario" tabindex="-1" aria-labelledby="modalDescargaUsuarioLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalDescargaUsuarioLabel">Seleccionar Paciente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="max-height: 600px; overflow-y: auto;">
+          <div *ngIf="pacientesFiltrados && pacientesFiltrados.length > 0">
+            <div class="d-flex flex-row flex-nowrap overflow-auto justify-content-center">
+              <div *ngFor="let user of pacientesFiltrados" class="d-flex flex-column align-items-center mb-3 me-3 p-3 border contenedor_usuario" (click)="seleccionarUsuario(user)" style="cursor: pointer; min-width: 150px; border-radius: 75px;">
+                <h5 class="mb-2 text-center">{{ user.nombre }} {{ user.apellido }}</h5>
+                <img [src]="user.perfil1" alt="Imagen de perfil" class="img-thumbnail" style="width: 100px; height: 100px; border: none;">
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!pacientesFiltrados || pacientesFiltrados.length === 0">
+            <p>No hay pacientes disponibles.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para mostrar la historia clínica del paciente seleccionado -->
+  <div class="modal fade" id="modalHistoriaClinica" tabindex="-1" aria-labelledby="modalHistoriaClinicaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalHistoriaClinicaLabel">Historia Clínica</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="max-height: 600px; overflow-y: auto;">
+          <div *ngIf="turnosPacienteSeleccionado && turnosPacienteSeleccionado.length > 0">
+            <div *ngFor="let turno of turnosPacienteSeleccionado" class="card mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Datos Generales</h5>
+                <p class="card-text"><strong>Especialidad:</strong> {{ turno.especialidad }}</p>
+                <p class="card-text"><strong>Día:</strong> {{ turno.dia }}</p>
+                <p class="card-text"><strong>Hora:</strong> {{ turno.hora | timeFormat }}</p>
+                <p class="card-text"><strong>Altura:</strong> {{ turno.historiaClinica.altura }}</p>
+                <p class="card-text"><strong>Peso:</strong> {{ turno.historiaClinica.peso }}</p>
+                <p class="card-text"><strong>Presión:</strong> {{ turno.historiaClinica.presion }}</p>
+                <p class="card-text"><strong>Temperatura:</strong> {{ turno.historiaClinica.temperatura }}</p>
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">Datos Dinámicos</h5>
+                <div *ngFor="let dato of turno.historiaClinica.datosDinamicos">
+                  <p class="card-text"><strong>{{ dato.clave }}:</strong> {{ dato.valor }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!turnosPacienteSeleccionado || turnosPacienteSeleccionado.length === 0">
+            <p>No hay datos de historia clínica disponibles.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <!-- Tipo de Usuario Modal -->
   <div class="modal fade" id="userTypeModal" tabindex="-1" aria-labelledby="userTypeModalLabel" aria-hidden="true">
     <div class="modal-dialog">

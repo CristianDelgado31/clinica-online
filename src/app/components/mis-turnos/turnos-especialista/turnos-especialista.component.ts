@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { TurnoService } from '../../../services/turno.service';
 
 
 @Component({
@@ -11,7 +12,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
   imports: [
     FormsModule, 
     CommonModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    ReactiveFormsModule
   ],
   templateUrl: './turnos-especialista.component.html',
   styleUrls: ['./turnos-especialista.component.css']
@@ -22,19 +24,22 @@ export class TurnosEspecialistaComponent implements OnInit {
   filtroEspecialidad: string = '';
   filtroPaciente: string = '';
   turnoSeleccionadoId: string = ''; // Id del turno seleccionado para cancelar
-  
+  terminoBusqueda: string = '';
   
   modal: any;
   comentarioSeleccionado: String = '';
-  comentarioCancelacion: string = ''; // Comentario de cancelación
-  comentarioRechazo: string = ''; // Comentario de rechazo
-  comentarioFinalizacion: string = ''; // Comentario de finalización
-  comentarioCalificacion: string = ''; // Comentario de calificación
+  comentarioCancelacion: string = ''; 
+  comentarioRechazo: string = ''; 
+  comentarioFinalizacion: string = '';
+  comentarioCalificacion: string = '';
 
   page: number = 1;  // Página actual
-  pageSize: number = 8;  // Elementos por página
+  pageSize: number = 8;
 
-  constructor(private userService: UserService) { }
+  //historia clinica
+  historiaClinicaForm!: FormGroup;
+
+  constructor(private userService: UserService, private fb: FormBuilder, private turnoService: TurnoService) { }
 
   ngOnInit(): void {
     // Aquí puedes obtener los turnos desde un servicio, o utilizar datos simulados para pruebas
@@ -43,18 +48,53 @@ export class TurnosEspecialistaComponent implements OnInit {
       const parsedUser = JSON.parse(user);
       this.userService.getTurnosEspecialista(parsedUser.email).subscribe((turnos: any[]) => {
         this.turnos = turnos;
-        this.turnosFiltrados = [...turnos]; // Inicializamos la lista filtrada
+
+        this.turnos = turnos.sort((a, b) => {
+          // Combinar día y hora y convertirlas en objetos de fecha para comparación
+          const dateA = this.convertToDate(a.dia, a.hora);
+          const dateB = this.convertToDate(b.dia, b.hora);
+          return dateA.getTime() - dateB.getTime(); // Orden ascendente
+        });
+
+        this.turnosFiltrados = [...this.turnos]; // Inicializamos la lista filtrada
+      });
+
+      this.historiaClinicaForm = this.fb.group({
+        altura: ['', [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
+        peso: ['', [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
+        temperatura: ['', [Validators.required, Validators.pattern(/^\d+(\.\d{1})?$/)]],
+        presion: ['', [Validators.required, Validators.pattern(/^\d{2,3}\/\d{2,3}$/)]],
+        datosDinamicos: this.fb.array([this.createDatoDinamico()])
       });
     }
   }
 
+  // Método para convertir 'dia' y 'hora' en un objeto Date
+  convertToDate(dia: string, hora: string): Date {
+    const [day, month] = dia.split('/').map(Number);
+    const [hours, minutes] = hora.split(':').map(Number);
+    return new Date(new Date().getFullYear(), month - 1, day, hours, minutes);
+  }
+
   // Función para filtrar turnos
   filtrarTurnos() {
+    const termino = this.terminoBusqueda.toLowerCase();
     this.turnosFiltrados = this.turnos.filter(turno => {
-      return (
-        (this.filtroEspecialidad ? turno.especialidad.toLowerCase().includes(this.filtroEspecialidad.toLowerCase()) : true) &&
-        (this.filtroPaciente ? `${turno.paciente.nombre} ${turno.paciente.apellido}`.toLowerCase().includes(this.filtroPaciente.toLowerCase()) : true)
-      );
+      const keys = ['especialidad', 'paciente.nombre', 'paciente.apellido', 'dia', 'hora', 'estado', 'historiaClinica.altura', 'historiaClinica.peso', 'historiaClinica.temperatura', 'historiaClinica.presion'];
+      for (const key of keys) {
+        const value = key.split('.').reduce((o, i) => (o ? o[i] : null), turno);
+        if (value && value.toString().toLowerCase().includes(termino)) {
+          return true;
+        }
+      }
+      if (turno.historiaClinica && turno.historiaClinica.datosDinamicos) {
+        for (const dato of turno.historiaClinica.datosDinamicos) {
+          if (dato.clave.toLowerCase().includes(termino) || dato.valor.toLowerCase().includes(termino)) {
+            return true;
+          }
+        }
+      }
+      return false;
     });
   }
 
@@ -64,7 +104,7 @@ export class TurnosEspecialistaComponent implements OnInit {
     // y guardar el comentario de cancelación. Ejemplo:
     console.log('Cancelar turno', this.turnoSeleccionadoId, 'Comentario:', this.comentarioCancelacion);
     // const comentario = 'Cancelado por el especialista: ' + this.comentarioCancelacion;
-    this.userService.cancelarTurno(this.turnoSeleccionadoId, this.comentarioRechazo).then(() => {
+    this.userService.cancelarTurno(this.turnoSeleccionadoId, this.comentarioCancelacion).then(() => {
       console.log('Turno cancelado');
     }).catch((error) => {
       console.error('Error al cancelar turno', error);
@@ -167,5 +207,62 @@ export class TurnosEspecialistaComponent implements OnInit {
       const modalComentario = new window.bootstrap.Modal(modalElement);
       modalComentario.show();
     }
+
+    const buscarTurno = this.turnos.find(t => t.id === turnoId);
+    console.log(buscarTurno.historiaClinica);
+  }
+
+  get datosDinamicos() {
+    return this.historiaClinicaForm.get('datosDinamicos') as FormArray;
+  }
+
+  createDatoDinamico(): FormGroup {
+    return this.fb.group({
+      clave: ['', Validators.required],
+      valor: ['', Validators.required]
+    });
+  }
+
+  agregarDatoDinamico() {
+    if (this.datosDinamicos.length < 3) {
+      this.datosDinamicos.push(this.createDatoDinamico());
+    } else {
+      console.log('Máximo de datos dinámicos alcanzado');
+    }
+  }
+
+  realizarHistoriaClinica(turnoId: string) {
+    console.log('Realizar historia clínica', turnoId);
+    this.turnoSeleccionadoId = turnoId;
+    this.historiaClinicaForm.reset();
+    this.datosDinamicos.clear();
+    this.datosDinamicos.push(this.createDatoDinamico());
+    const modalElement = document.getElementById('historiaClinicaModal');
+    this.modal = new window.bootstrap.Modal(modalElement);
+    this.modal.show();
+  }
+
+  guardarHistoriaClinica() {
+    if (this.historiaClinicaForm.invalid) {
+      console.log('Todos los campos son obligatorios');
+      return;
+    }
+
+    const historiaClinica = {
+      altura: this.historiaClinicaForm.get('altura')?.value,
+      peso: this.historiaClinicaForm.get('peso')?.value,
+      temperatura: this.historiaClinicaForm.get('temperatura')?.value,
+      presion: this.historiaClinicaForm.get('presion')?.value,
+      datosDinamicos: this.historiaClinicaForm.get('datosDinamicos')?.value
+    }
+    console.log('Guardar historia clínica', historiaClinica);
+
+    this.turnoService.agregarHistoriaClinica(this.turnoSeleccionadoId, historiaClinica).then(() => {
+      console.log('Historia clínica guardada');
+    }).catch((error) => {
+      console.error('Error al guardar historia clínica', error);
+    });
+    // Aquí puedes agregar la lógica para guardar la historia clínica
+    this.modal.hide();
   }
 }

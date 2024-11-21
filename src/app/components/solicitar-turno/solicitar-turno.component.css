@@ -133,33 +133,69 @@
 
 /* -------------------------------------------------------------------------------------------------- */
 
-.dia-button, .horario-button {
-  background-color: #f0f0f0;
-  border: none;
+/* Contenedor principal */
+.dias-horarios-container {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 20px; /* Espaciado interno */
+  width: 100%;
+}
+
+/* Contenedor de la lista con scroll horizontal */
+.horarios-wrapper {
+  max-width: 800px; /* Limita el ancho máximo del área visible */
+  width: 100%; /* Se ajusta al ancho del contenedor */
+  overflow-x: auto; /* Habilita el scroll horizontal */
+  white-space: nowrap; /* Mantiene los elementos en una sola línea */
+  padding-bottom: 10px; /* Para evitar que el scroll tape los botones */
+  scrollbar-width: thin; /* Ajusta el grosor del scrollbar (Firefox) */
+  scrollbar-color: #ddd #f9f9f9; /* Colores del scrollbar (Firefox) */
+}
+
+/* Lista de horarios */
+.horarios-list {
+  display: inline-flex; /* Cambia a "inline-flex" para el scroll horizontal */
+  gap: 10px; /* Espaciado entre los botones */
+  align-items: center;
+}
+
+/* Botones de horario */
+.horario-button {
+  background-color: #fff;
+  border: 2px solid #ddd;
   border-radius: 10px;
-  padding: 10px;
-  margin: 5px;
+  padding: 10px 15px;
   cursor: pointer;
-  width: 180px;
   text-align: center;
   font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  min-width: 140px; /* Ancho mínimo */
 }
 
-.dia-button:hover, .horario-button:hover {
-  background-color: #e0e0e0;
+.horario-button:hover {
+  background-color: #f9f9f9;
+  border-color: #aaa;
+  transform: scale(1.05); /* Suave zoom al pasar el mouse */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
 }
 
-.dias-list, .horarios-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+/* Ajustes del scrollbar (Chrome, Edge, Safari) */
+.horarios-wrapper::-webkit-scrollbar {
+  height: 8px; /* Altura del scrollbar */
 }
 
-.dia-button, .horario-button {
-  width: 180px;
+.horarios-wrapper::-webkit-scrollbar-track {
+  background: #f9f9f9; /* Fondo del track */
 }
 
-.volver-btn {
-  margin-left: 0; /* Puedes ajustar este valor si deseas más espacio */
-  display: inline-block;
+.horarios-wrapper::-webkit-scrollbar-thumb {
+  background-color: #ddd; /* Color del scrollbar */
+  border-radius: 10px; /* Bordes redondeados */
+  border: 2px solid #f9f9f9; /* Espaciado interno */
 }

@@ -15,4 +15,10 @@ export class TurnoService {
   getTurnos() {
     return collectionData(collection(this.firestore, 'turnos'), { idField: 'id' });
   }
+  
+  agregarHistoriaClinica(turnoId: string, historiaClinica: any) {
+    const docRef = doc(this.firestore, 'turnos', turnoId);
+    return updateDoc(docRef, { historiaClinica });
+  }
+
 }

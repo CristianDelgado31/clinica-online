@@ -10,12 +10,12 @@
         </li>
         
         <li class="nav-item me-3" *ngIf="!userInLocalStorage">
-          <a class="nav-link hover-effect" routerLink="login">Iniciar Sesión</a>
+          <a class="nav-link hover-effect" routerLink="login" appClickHighlight highlightColor="black">Iniciar Sesión</a>
         </li>
         <li class="nav-item me-3" *ngIf="!userInLocalStorage">
           <a class="nav-link hover-effect" routerLink="register">Registrarse</a>
         </li>
-        <li class="nav-item me-3" *ngIf="userInLocalStorage && isPaciente || isAdmin">
+        <li class="nav-item me-3" *ngIf="userInLocalStorage && isPaciente || userInLocalStorage && isAdmin">
           <a class="nav-link hover-effect" routerLink="solicitar-turno">Solicitar turno</a>
         </li>
         <li class="nav-item me-3" *ngIf="userInLocalStorage && isAdmin">
@@ -27,8 +27,14 @@
         <li class="nav-item me-3" *ngIf="userInLocalStorage && isAdmin">
           <a class="nav-link hover-effect" routerLink="usuarios">Usuarios</a>
         </li>
+        <li class="nav-item me-3" *ngIf="userInLocalStorage && isAdmin">
+          <a class="nav-link hover-effect" routerLink="informes">Informes</a>
+        </li>
         <li class="nav-item me-3" *ngIf="userInLocalStorage && !isAdmin">
           <a class="nav-link hover-effect" routerLink="mis-turnos">Mis turnos</a>
+        </li>
+        <li class="nav-item me-3" *ngIf="userInLocalStorage && !isAdmin && !isPaciente">
+          <a class="nav-link hover-effect" routerLink="pacientes">Pacientes</a>
         </li>
         <li class="nav-item me-3" *ngIf="userInLocalStorage">
           <button class="btn btn-danger" (click)="logout()">Cerrar Sesión</button>

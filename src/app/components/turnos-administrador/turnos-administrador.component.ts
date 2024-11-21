@@ -32,7 +32,15 @@ export class TurnosAdministradorComponent implements OnInit {
       if (parsedUser.isAdmin) {
         this.turnoService.getTurnos().subscribe((turnos: any[]) => {
           this.turnos = turnos;
-          this.turnosFiltrados = turnos;  // Muestra todos los turnos al inicio
+
+          this.turnos = turnos.sort((a, b) => {
+            // Combinar día y hora y convertirlas en objetos de fecha para comparación
+            const dateA = this.convertToDate(a.dia, a.hora);
+            const dateB = this.convertToDate(b.dia, b.hora);
+            return dateA.getTime() - dateB.getTime(); // Orden ascendente
+          });
+
+          this.turnosFiltrados = this.turnos;  // Muestra todos los turnos al inicio
           console.log('Turnos', this.turnos);
         });
       } else {
@@ -40,6 +48,13 @@ export class TurnosAdministradorComponent implements OnInit {
         console.log('Acceso denegado: El usuario no tiene permisos de administrador');
       }
     }
+  }
+
+  // Método para convertir 'dia' y 'hora' en un objeto Date
+  convertToDate(dia: string, hora: string): Date {
+    const [day, month] = dia.split('/').map(Number);
+    const [hours, minutes] = hora.split(':').map(Number);
+    return new Date(new Date().getFullYear(), month - 1, day, hours, minutes);
   }
 
   // Filtrar por especialidad o especialista

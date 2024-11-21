@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { TurnoService } from '../../services/turno.service';
 import { user } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { Timestamp } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-solicitar-turno',
@@ -142,7 +143,7 @@ export class SolicitarTurnoComponent implements OnInit {
 
   onDiaSelect(dia: any) {
     // Aquí, cambiamos para mostrar solo el día y mes (dd/MM)
-    this.selectedDia = this.datePipe.transform(dia.fecha, 'dd/MM');
+    this.selectedDia = dia.fecha;
     console.log(`Día seleccionado: ${this.selectedDia}`);
     // Aquí puedes cargar los horarios disponibles para el día seleccionado
     this.generateHorarios(this.disponibilidadesSeleccionadas.horaInicio, this.disponibilidadesSeleccionadas.horaFin);
@@ -179,7 +180,10 @@ export class SolicitarTurnoComponent implements OnInit {
 
       this.disponibilidadDias = disponibilidadesSeleccionadas.diasDisponibles;
       this.diasDisponibles = this.getDiasDisponibles(this.disponibilidadDias);
-      // this.generateHorarios(disponibilidadesSeleccionadas.horaInicio, disponibilidadesSeleccionadas.horaFin);
+      this.generateHorarios(disponibilidadesSeleccionadas.horaInicio, disponibilidadesSeleccionadas.horaFin);
+
+      
+
       this.mostrarDisponibilidad = true;
       this.disponibilidadesSeleccionadas = disponibilidadesSeleccionadas;
     }
@@ -207,7 +211,8 @@ export class SolicitarTurnoComponent implements OnInit {
         // Mientras la fecha sea menor o igual a la fecha límite
         while (fechaDia <= fechaLimite) {
           if (fechaDia >= fechaHoy && fechaDia <= fechaLimite) {
-            diasValidos.push({ dia, fecha: new Date(fechaDia)});
+            let fechaDiaMes = this.datePipe.transform(fechaDia, 'dd/MM');
+            diasValidos.push({ dia, fecha: fechaDiaMes });
           }
           fechaDia.setDate(fechaDia.getDate() + 7);
         }
@@ -215,7 +220,7 @@ export class SolicitarTurnoComponent implements OnInit {
     });
 
     diasValidos.sort((a, b) => a.fecha - b.fecha); // Comparación directa de fechas
-
+    console.log('Días disponibles:', diasValidos);
     return diasValidos;
   }
 
@@ -236,16 +241,23 @@ export class SolicitarTurnoComponent implements OnInit {
     const start = this.timeToMinutes(horaInicio);
     const end = this.timeToMinutes(horaFin);
     const interval = 30; // Intervalo de 30 minutos
-  
+    
+    //Fechas seleccionadas anteriormente
+    const fechasSeleccionadas: any = [];
+    
     // Verificar si hay turnos
-    if (!this.turnos || this.turnos.length === 0) {
-      console.log("No hay turnos disponibles.");
-      return;
-    }
+    // if (!this.turnos || this.turnos.length === 0) {
+    //   console.log("No hay turnos disponibles.");
+    //   return;
+    // }
   
     // Filtrar turnos ocupados por especialista y especialidad
     const turnosOcupados = this.turnos.filter((turno) => {
-      return turno.especialista?.id === this.selectedEspecialista.id && turno.especialidad === this.selectedEspecialidad && turno.dia === this.selectedDia;
+      if(turno.especialista?.id === this.selectedEspecialista.id && turno.especialidad === this.selectedEspecialidad){
+        let fecha = `${turno.dia} ${turno.hora}`;
+        fechasSeleccionadas.push(fecha);
+        return turno;
+      }
     });
     console.log('Horarios ocupados:', turnosOcupados);
   
@@ -260,12 +272,47 @@ export class SolicitarTurnoComponent implements OnInit {
   
     // Filtrar horarios ocupados
     const horariosDisponibles = horarios.filter((hora) => !horariosOcupadosSet.has(hora));
-    console.log('Horarios disponibles:', horariosDisponibles);
-  
+    // console.log('Horarios disponibles:', horariosDisponibles);
+
+    const fechasYHoras = [];
+    // const dias = this.diasDisponibles.sort((a, b) => a.fecha - b.fecha);
+    const diasFormatoFecha = this.diasDisponibles.map(dia => {
+      // separar dia y mes para ordenar
+      const [diaStr, mesStr] = dia.fecha.split('/');
+      const diaNum = parseInt(diaStr);
+      const mesNum = parseInt(mesStr);
+      return { dia: dia.dia, fecha: dia.fecha, diaNum, mesNum };
+    })
+
+    const diasOrdenados = diasFormatoFecha.sort((a, b) => {
+      if(a.mesNum === b.mesNum) {
+        return a.diaNum - b.diaNum;
+      } else {
+        return a.mesNum - b.mesNum;
+      }
+    });
+
+    console.log('Dias ordenados:', diasOrdenados);
+
+    // // iterar los dias disponibles
+    for(let dia of diasOrdenados) {
+      for(let hora of horariosDisponibles) {
+        let fecha = `${dia.fecha} ${hora}`;
+        if(!fechasSeleccionadas.includes(dia.fecha)){
+          fechasYHoras.push(fecha);
+        }
+      }
+    }
+
+    // Sacar las fechas y horas seleccionadas de los turnos
+    
+      
+
+    // console.log(fechasYHoras);
     // Asignar horarios disponibles
-    this.horariosDisponibles = horariosDisponibles;
+    this.horariosDisponibles = fechasYHoras;
   }
-  
+
 
   // Convertir hora (HH:mm) a minutos desde las 00:00
   timeToMinutes(time: string): number {
@@ -344,14 +391,19 @@ export class SolicitarTurnoComponent implements OnInit {
           // id: this.paciente.id
         }
       }
-      
+
+      const [diaSeleccionado, horaSeleccionado] = this.selectedHora.split(" ");
+      console.log('Dia seleccionado:', diaSeleccionado);
+      console.log('Hora seleccionada:', horaSeleccionado);
+
       const turnoData = {
         especialidad: this.selectedEspecialidad,
         especialista: especialista,
-        dia: this.selectedDia,
-        hora: this.selectedHora,
+        dia: diaSeleccionado,
+        hora: horaSeleccionado,
         paciente: paciente,
-        estado: 'pendiente'
+        estado: 'pendiente',
+        fechaRegistro: Timestamp.now()
       };
       console.log('Turno enviado:', turnoData);
 
@@ -363,56 +415,11 @@ export class SolicitarTurnoComponent implements OnInit {
       });
 
       // Redirigir al componente de mis turnos
-      this.router.navigate(['/mis-turnos']);
+      if(this.isAdmin){
+        this.router.navigate(['/turnos']);
+      } else {
+        this.router.navigate(['/mis-turnos']);
+      }
   }
-
-
-   // Método para enviar la información del turno
-  //  enviarTurno() {
-  //   if (this.selectedEspecialidad && this.selectedEspecialista && this.selectedDia && this.selectedHora) {
-  //     const userData = localStorage.getItem('user');
-  //     let userEmail = "";
-  //     const paciente: { nombre?: string, apellido?: string, email?: string } = {};
-  //     if(userData) {
-  //       const result = JSON.parse(userData);
-  //       userEmail = result.email;
-  //       paciente.nombre = result.nombre;
-  //       paciente.apellido = result.apellido;
-  //       paciente.email = result.email;
-        
-  //     }
-
-  //     const buscarEspecialistaPorId = this.arrEspecialistas.find((e) => e.id === this.selectedEspecialista);
-
-  //     const especialista = {
-  //       nombre: buscarEspecialistaPorId.nombre,
-  //       apellido: buscarEspecialistaPorId.apellido,
-  //       email: buscarEspecialistaPorId.email,
-  //       id: buscarEspecialistaPorId.id  
-  //     }
-
-  //     const turnoData = {
-  //       especialidad: this.selectedEspecialidad,
-  //       especialista: especialista,
-  //       dia: this.selectedDia,
-  //       hora: this.selectedHora,
-  //       paciente: paciente,
-  //       estado: 'pendiente'
-  //     };
-
-  //     // Para propósitos de prueba, solo mostramos los datos en consola
-  //     console.log('Turno enviado:', turnoData);
-      
-  //     // Enviar el turno al servicio
-  //     this.turnoService.setTurno(turnoData).then(() => {
-  //       console.log('Turno guardado correctamente');
-  //     }).catch((error) => {
-  //       console.error('Error al guardar el turno:', error);
-  //     });
-
-  //     // Redirigir al componente de mis turnos
-  //     this.router.navigate(['/mis-turnos']);
-  //   }
-  // }
 
 }

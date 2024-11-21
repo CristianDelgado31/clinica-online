@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -28,7 +29,7 @@ export class LoginComponent {
   urlAdmin: string = 'https://clinic-profile-images.nyc3.digitaloceanspaces.com/ebcc95df-f57b-4a55-9112-345ed0d1b5d4.png';
   
 
-  constructor(private fb: FormBuilder, private firestore: Firestore, private auth: Auth, private router: Router, private authService: AuthService) {
+  constructor(private fb: FormBuilder, private firestore: Firestore, private auth: Auth, private router: Router, private authService: AuthService, private userService: UserService) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(1)]]
@@ -61,6 +62,9 @@ export class LoginComponent {
             timer: 2000,
             showConfirmButton: false
           });
+
+          // Log usuarios
+          this.userService.logUsuarios(email);
 
           console.log('Inicio de sesión exitoso', user);
           this.errorMessage = null;
